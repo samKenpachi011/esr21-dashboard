@@ -35,11 +35,10 @@
     	{% eligibility_button result %}
     {% endif %}
     {% if result.is_eligible %}
-	        {% if not result.consent %}
-	
-	        {% else %}
+    	{% consent_button result %}
+        {% if result.consent %}
 
-	        {% endif %}
+        {% endif %}
     {% endif %}
     </div>
     </td>
@@ -48,7 +47,7 @@
 
 {% block listboard_table_columns %}
     <td>{{ result.screening_identifier }} </td>
-    <td nowrap>{{ result.subject_identifier }}</td>
+    <td nowrap>{{ result.consent.subject_identifier }}</td>
     <td nowrap>{{ result.age_in_years }} yrs</td>
     <td nowrap>{{ result.user_created }}</td>
 

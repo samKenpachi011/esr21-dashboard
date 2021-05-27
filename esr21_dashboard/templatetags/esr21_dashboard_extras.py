@@ -29,6 +29,18 @@ def eligibility_button(model_wrapper):
                 tooltip=tooltip, obj=obj)
 
 
+@register.inclusion_tag('esr21_dashboard/buttons/consent_button.html')
+def consent_button(model_wrapper):
+    title = ['Consent subject to participate.']
+    consent_version = model_wrapper.consent_version
+    return dict(
+        screening_identifier=model_wrapper.object.screening_identifier,
+        subject_identifier=model_wrapper.consent.subject_identifier,
+        add_consent_href=model_wrapper.consent.href,
+        consent_version=consent_version,
+        title=' '.join(title))
+
+
 @register.inclusion_tag('esr21_dashboard/buttons/dashboard_button.html')
 def dashboard_button(model_wrapper):
     subject_dashboard_url = settings.DASHBOARD_URL_NAMES.get(

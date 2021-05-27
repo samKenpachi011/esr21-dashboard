@@ -1,1 +1,2 @@
+from .informed_consent_model_wrapper import InformedConsentModelWrapper
 from .subject_screening_model_wrapper import SubjectScreeningModelWrapper

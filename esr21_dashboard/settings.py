@@ -124,10 +124,12 @@ STATIC_URL = '/static/'
 
 DASHBOARD_URL_NAMES = {
     'screening_listboard_url': 'esr21_dashboard:screening_listboard_url',
+    'subject_listboard_url': 'esr21_dashboard:subject_listboard_url',
 }
 
 DASHBOARD_BASE_TEMPLATES = {
     'listboard_base_template': 'esr21/base.html',
     'dashboard_base_template': 'esr21/base.html',
     'screening_listboard_template': 'esr21_dashboard/screening/listboard.html',
+    'subject_listboard_template': 'esr21_dashboard/subject/listboard.html',
 }

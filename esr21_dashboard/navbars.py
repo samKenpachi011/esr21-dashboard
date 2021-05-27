@@ -15,4 +15,13 @@ esr21_dashboard.append_item(
         url_name=settings.DASHBOARD_URL_NAMES.get('screening_listboard_url'),
         no_url_namespace=no_url_namespace))
 
+esr21_dashboard.append_item(
+    NavbarItem(
+        name='consented_subject',
+        title='Subjects',
+        label='Subjects',
+        fa_icon='fa fa-user-plus',
+        url_name=settings.DASHBOARD_URL_NAMES.get('subject_listboard_url'),
+        no_url_namespace=no_url_namespace))
+
 site_navbars.register(esr21_dashboard)

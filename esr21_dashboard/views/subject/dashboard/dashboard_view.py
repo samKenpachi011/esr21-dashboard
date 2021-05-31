@@ -5,11 +5,10 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
-from edc_subject_dashboard import AppointmentModelWrapper
 
 from .dashboard_view_mixin import DashboardViewMixin
 from ....model_wrappers import InformedConsentModelWrapper
-
+from ....model_wrappers import AppointmentModelWrapper, ContactInformationModelWrapper
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -21,6 +20,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     appointment_model_wrapper_cls = AppointmentModelWrapper
     consent_model = 'esr21_subject.subjectconsent'
     consent_model_wrapper_cls = InformedConsentModelWrapper
+    subject_locator_model_wrapper_cls = ContactInformationModelWrapper
     navbar_name = 'esr21_dashboard'
     navbar_selected_item = 'consented_subject'
     subject_locator_model = 'esr21_subject.subjectlocator'
@@ -35,16 +35,21 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                     'visit_code')
         return self._appointments
 
+    def get_onschedule_model_obj(self, schedule):
+        try:
+            return schedule.onschedule_model_cls.objects.get(
+                subject_identifier=self.subject_identifier,
+                schedule_name=schedule.name)
+        except ObjectDoesNotExist:
+            return None
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         locator_obj = self.get_locator_info()
         context.update(
             locator_obj=locator_obj,
-            schedule_names=[model.schedule_name for model in self.onschedule_models],
-            cohorts=self.get_cohorts,
-            subject_consent=self.consent_wrapped,
-            hiv_status=self.hiv_status,)
+            subject_consent=self.consent_wrapped)
         return context
 
     def get_locator_info(self):

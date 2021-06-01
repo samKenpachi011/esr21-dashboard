@@ -55,9 +55,9 @@ def dashboard_button(model_wrapper):
 def personal_contact_info_button(model_wrapper):
     title = ['Edit Personal Contact information.']
     return dict(
-        subject_identifier=model_wrapper.subject_locator.subject_identifier,
-        add_subject_locator_href=model_wrapper.subject_locator.href,
-        subject_locator_model_obj=model_wrapper.subject_locator_model_obj,
+        subject_identifier=model_wrapper.contact_information.subject_identifier,
+        add_contact_information_href=model_wrapper.contact_information.href,
+        contact_information_model_obj=model_wrapper.contact_information_model_obj,
         title=' '.join(title))
 
 

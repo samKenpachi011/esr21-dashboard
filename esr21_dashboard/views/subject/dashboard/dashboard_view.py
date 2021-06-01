@@ -22,6 +22,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     consent_model_wrapper_cls = InformedConsentModelWrapper
     subject_locator_model = 'esr21_subject.personalcontactinfo'
     subject_locator_model_wrapper_cls = ContactInformationModelWrapper
+    special_forms_include_value = "esr21_dashboard/subject/dashboard/special_forms.html"
     navbar_name = 'esr21_dashboard'
     navbar_selected_item = 'consented_subject'
 

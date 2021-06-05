@@ -23,7 +23,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     subject_locator_model_wrapper_cls = ContactInformationModelWrapper
     navbar_name = 'esr21_dashboard'
     navbar_selected_item = 'consented_subject'
-    subject_locator_model = 'esr21_subject.subjectlocator'
+    subject_locator_model = 'esr21_subject.personalcontactinfo'
 
     @property
     def appointments(self):

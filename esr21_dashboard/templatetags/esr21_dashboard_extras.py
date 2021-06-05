@@ -51,6 +51,16 @@ def dashboard_button(model_wrapper):
         subject_identifier=model_wrapper.subject_identifier)
 
 
+@register.inclusion_tag('esr21_dashboard/buttons/personal_contact_info_button.html')
+def personal_contact_info_button(model_wrapper):
+    title = ['Edit Personal Contact information.']
+    return dict(
+        subject_identifier=model_wrapper.contact_information.subject_identifier,
+        add_contact_information_href=model_wrapper.contact_information.href,
+        contact_information_model_obj=model_wrapper.contact_information_model_obj,
+        title=' '.join(title))
+
+
 @register.inclusion_tag('edc_visit_schedule/subject_schedule_footer_row.html')
 def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
                                 subject_dashboard_url):

@@ -18,9 +18,11 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     dashboard_template = 'subject_dashboard_template'
     appointment_model = 'edc_appointment.appointment'
     appointment_model_wrapper_cls = AppointmentModelWrapper
-    consent_model = 'esr21_subject.subjectconsent'
+    consent_model = 'esr21_subject.informedconsent'
     consent_model_wrapper_cls = InformedConsentModelWrapper
+    subject_locator_model = 'esr21_subject.personalcontactinfo'
     subject_locator_model_wrapper_cls = ContactInformationModelWrapper
+    special_forms_include_value = "esr21_dashboard/subject/dashboard/special_forms.html"
     navbar_name = 'esr21_dashboard'
     navbar_selected_item = 'consented_subject'
     subject_locator_model = 'esr21_subject.personalcontactinfo'

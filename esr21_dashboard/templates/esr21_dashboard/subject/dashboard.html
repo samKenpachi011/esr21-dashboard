@@ -33,6 +33,7 @@
 {% block visit_schedules_panel %}
    {% for visit_schedule in visit_schedules.values %}
    		 {% for schedule in visit_schedule.schedules.values %}
+   		 {% if schedule.name in schedule_names %} 
 	<div id="subject_dashboard_for_{{ visit_schedule.name|slugify }}-{{ schedule.name|slugify }}"
 		class="panel panel-{% if anonymous %}danger{% else %}info{% endif %}">
 	<div class="panel-heading">
@@ -71,6 +72,7 @@
 			{% subject_schedule_footer_row subject_identifier visit_schedule schedule subject_dashboard_url %}
 		{% endblock appointments_schedule_footer %}	
     	</div>
+    	 {% endif %} 
      {% endfor %}
    	{% endfor %}
 {% endblock visit_schedules_panel %}

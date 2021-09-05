@@ -1,0 +1,54 @@
+{% extends "edc_dashboard/listboard.html" %}
+{% load admin_urls %}
+{% load edc_base_extras %}
+{% load esr21_dashboard_extras %}
+             
+{% block listboard_panel %}
+    <a id="eligibilityconfirmation_add" title="Add Eligibility" class="btn btn-sm btn-default" role="button" 
+        href="{{ eligibility_confirmation_add_url }}?next={{ screening_listboard_url }}">
+            <i class="fa fa-plus fa-sm"></i> Add Eligibility Confirmation
+    </a>
+    <a id="return_to_home" title="go back" class="btn btn-sm btn-default" role="button" 
+        href="/">
+            <i class="fa fa-arrow-left fa-sm"></i> Go Back
+    </a>
+{% endblock listboard_panel %}
+
+
+{% block listboard_table_header %}
+    <!-- begin results header -->
+    <th>#</th>
+    <th></th>
+    <th>Screening Identifier</th>
+    <th>Subject Identifier</th>
+    <th>Age</th>
+    <th>User</th>
+    <!-- end results header -->
+{% endblock listboard_table_header %}
+
+
+{% block listboard_table_button_column %}
+    <td style="white-space: nowrap">
+    <div class="btn-group">
+    {% eligibility_confirmation_button result %}
+    {% if not result.is_eligible %}
+    	{% eligibility_button result %}
+    {% endif %}
+    {% if result.is_eligible %}
+    	{% consent_button result %}
+        {% if result.consent %}
+			{% dashboard_button result %}
+        {% endif %}
+    {% endif %}
+    </div>
+    </td>
+{% endblock listboard_table_button_column %}
+
+
+{% block listboard_table_columns %}
+    <td>{{ result.screening_identifier }} </td>
+    <td nowrap>{{ result.consent.subject_identifier }}</td>
+    <td nowrap>{{ result.age_in_years }} yrs</td>
+    <td nowrap>{{ result.user_created }}</td>
+
+{% endblock listboard_table_columns %}

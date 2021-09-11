@@ -37,7 +37,8 @@
     {% if result.is_eligible %}
     	{% consent_button result %}
         {% if result.consent %}
-			{% dashboard_button result %}
+           {% screening_eligibility_button result %} 
+			<!-- {% dashboard_button result %} -->
         {% endif %}
     {% endif %}
     </div>

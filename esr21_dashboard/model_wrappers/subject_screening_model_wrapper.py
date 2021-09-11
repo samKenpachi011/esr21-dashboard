@@ -7,9 +7,10 @@ from edc_model_wrapper import ModelWrapper
 from edc_consent import ConsentModelWrapperMixin
 
 from .informed_consent_model_wrapper import InformedConsentModelWrapper
+from .screening_model_wrapper_mixin import ScreeningModelWrapperMixin
 
 
-class SubjectScreeningModelWrapper(ConsentModelWrapperMixin, ModelWrapper):
+class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin, ConsentModelWrapperMixin, ModelWrapper):
 
     consent_model_wrapper_cls = InformedConsentModelWrapper
     model = 'esr21_subject.eligibilityconfirmation'

@@ -24,6 +24,7 @@ class ScreeningModelWrapperMixin:
         """
         model_obj = self.screening_model_obj or self.screening_cls(
             **self.create_screening_cls_options)
+        #import pdb; pdb.set_trace()
         return ScreeningEligibilityModelWrapper(model_obj=model_obj)
 
     @property
@@ -42,8 +43,8 @@ class ScreeningModelWrapperMixin:
     @property
     def screening_options(self):
         """Returns a dictionary of options to get an existing
-         caregiver locator model instance.
+        caregiver locator model instance.
         """
         options = dict(
-            subject_identifier=self.object.subject_identifier,)
+            subject_identifier=self.subject_identifier)
         return options

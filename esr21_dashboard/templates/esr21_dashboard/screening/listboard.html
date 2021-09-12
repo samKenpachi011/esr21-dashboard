@@ -32,13 +32,19 @@
     <div class="btn-group">
     {% eligibility_confirmation_button result %}
     {% if not result.is_eligible %}
-    	{% eligibility_button result %}
+        {% eligibility_button result %}
     {% endif %}
     {% if result.is_eligible %}
-    	{% consent_button result %}
+        {% consent_button result %}
         {% if result.consent %}
-           {% screening_eligibility_button result %} 
-			<!-- {% dashboard_button result %} -->
+            {% if result.screening and not result.screening.object.is_eligible %}
+                {% eligibility_button result %}
+            {% else %}
+                {% screening_eligibility_button result %} 
+                {% if result.screening %}
+                    {% dashboard_button result %}
+                {% endif %}
+            {% endif %}
         {% endif %}
     {% endif %}
     </div>

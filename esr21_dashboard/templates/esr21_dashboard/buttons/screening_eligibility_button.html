@@ -1,11 +1,11 @@
  <a id="screening_add_{{ subject_identifier }}" 
  	title="{{ title }}"
-	{% if not subject_identifier %}
+	{% if not screening %}
     	class="btn btn-warning btn-sm" data-toggle="tooltip"  data-placement="right"
         href="{{ add_screening_href }}">
 	{% else %}
-	    class="btn btn-success btn-sm" data-toggle="tooltip"  data-placement="right"
+	    class="btn btn-info btn-sm" data-toggle="tooltip"  data-placement="right"
         href="{{ add_screening_href }}">
     {% endif %}
-	Screening
+	Screening (v1)
  </a>

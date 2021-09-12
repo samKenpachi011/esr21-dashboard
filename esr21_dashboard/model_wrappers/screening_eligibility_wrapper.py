@@ -10,9 +10,8 @@ from .informed_consent_model_wrapper import InformedConsentModelWrapper
 import logging
 
 
-class ScreeningEligibilityModelWrapper(ConsentModelWrapperMixin, ModelWrapper):
+class ScreeningEligibilityModelWrapper(ModelWrapper):
 
-    consent_model_wrapper_cls = InformedConsentModelWrapper
     model = 'esr21_subject.screeningeligibility'
     next_url_attrs = ['subject_identifier']
     next_url_name = settings.DASHBOARD_URL_NAMES.get(

@@ -16,6 +16,12 @@ def eligibility_confirmation_button(model_wrapper):
         href=model_wrapper.href,
         title=' '.join(title))
 
+@register.inclusion_tag('esr21_dashboard/buttons/screening_eligibility_button.html')
+def screening_eligibility_button(model_wrapper):    
+    return dict(
+        add_screening_href=model_wrapper.screening.href,
+        screening=model_wrapper.screening,
+        screening_model_obj=model_wrapper.screening_model_obj)
 
 @register.inclusion_tag('esr21_dashboard/buttons/eligibility_button.html')
 def eligibility_button(model_wrapper):

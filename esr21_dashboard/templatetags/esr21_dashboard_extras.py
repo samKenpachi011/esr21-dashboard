@@ -16,6 +16,25 @@ def eligibility_confirmation_button(model_wrapper):
         href=model_wrapper.href,
         title=' '.join(title))
 
+@register.inclusion_tag('esr21_dashboard/buttons/screening_eligibility_button.html')
+def screening_eligibility_button(model_wrapper):    
+    return dict(
+        add_screening_href=model_wrapper.screening.href,
+        screening=model_wrapper.screening,
+        screening_model_obj=model_wrapper.screening_model_obj)
+
+@register.inclusion_tag('esr21_dashboard/buttons/eligibility_button.html')
+def screening_ineligibility_button(model_wrapper):
+    comment = []
+    obj = model_wrapper.screening.object
+    tooltip = None
+    if not obj.is_eligible:
+        comment = obj.ineligibility.split(',') if obj.ineligibility else []
+    comment = list(set(comment))
+    comment.sort()
+    return dict(eligible=obj.is_eligible, comment=comment,
+                tooltip=tooltip, obj=obj)
+
 
 @register.inclusion_tag('esr21_dashboard/buttons/eligibility_button.html')
 def eligibility_button(model_wrapper):

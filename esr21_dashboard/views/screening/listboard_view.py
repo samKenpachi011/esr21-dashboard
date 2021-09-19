@@ -8,20 +8,20 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.view_mixins import ListboardFilterViewMixin, SearchFormViewMixin
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
-
+from .filters import CustomListboardViewFilters
 from ...model_wrappers import SubjectScreeningModelWrapper
+
+
 # from .filters import ListboardViewFilters
 
 
 class ListBoardView(NavbarViewMixin, EdcBaseViewMixin, ListboardFilterViewMixin,
                     SearchFormViewMixin, ListboardView):
-
     listboard_template = 'screening_listboard_template'
     listboard_url = 'screening_listboard_url'
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
-
-#     listboard_view_filters = ListboardViewFilters()
+    #     listboard_view_filters = ListboardViewFilters()
     model = 'esr21_subject.eligibilityconfirmation'
     model_wrapper_cls = SubjectScreeningModelWrapper
     navbar_name = 'esr21_dashboard'
@@ -29,6 +29,8 @@ class ListBoardView(NavbarViewMixin, EdcBaseViewMixin, ListboardFilterViewMixin,
     ordering = '-modified'
     paginate_by = 10
     search_form_url = 'screening_listboard_url'
+
+    listboard_view_filters = CustomListboardViewFilters()
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):

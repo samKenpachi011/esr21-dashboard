@@ -23,6 +23,15 @@ def screening_eligibility_button(model_wrapper):
         screening=model_wrapper.screening,
         screening_model_obj=model_wrapper.screening_model_obj)
 
+@register.inclusion_tag('esr21_dashboard/buttons/edit_screening_button.html')
+def edit_screening_button(model_wrapper):
+    title = ['Edit screening eligibility form.']
+    return dict(
+        href=model_wrapper.screening.href,
+        screening=model_wrapper.screening,
+        title=' '.join(title)
+    )
+
 @register.inclusion_tag('esr21_dashboard/buttons/eligibility_button.html')
 def screening_ineligibility_button(model_wrapper):
     comment = []

@@ -9,6 +9,8 @@ from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 from .dashboard_view_mixin import DashboardViewMixin
 from ....model_wrappers import InformedConsentModelWrapper
 from ....model_wrappers import AppointmentModelWrapper, ContactInformationModelWrapper
+from edc_visit_schedule.site_visit_schedules import site_visit_schedules
+from esr21_subject.models import OnSchedule, ScreeningEligibility
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -46,13 +48,22 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return None
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
 
+        context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
+
         context.update(
             locator_obj=locator_obj,
             subject_consent=self.consent_wrapped,
-            schedule_names=[model.schedule_name for model in self.onschedule_models])
+            schedule_names=[model.schedule_name for model in self.onschedule_models]
+        )
+
+        if 'main_schedule_enrollment' in self.request.path_info:
+            self.main_schedule_enrollment()
+        
+        if 'sub_cohort_enrollment' in self.request.path_info:
+            self.sub_cohort_enrollment()
+
         return context
 
     def get_locator_info(self):
@@ -76,3 +87,40 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                 self.onschedule_models.append(onschedule_model_obj)
             self.visit_schedules.update(
                 {visit_schedule.name: visit_schedule})
+
+    def main_schedule_enrollment(self):
+        cohort = 'esr21'
+        onschedule_model = 'esr21_subject.onschedule'
+        try:
+            screening_eligibility = ScreeningEligibility.objects.get(subject_identifier=self.subject_identifier)
+        except ObjectDoesNotExist:
+            pass
+        else:
+            if screening_eligibility.is_eligible:
+                self.put_on_schedule(f'{cohort}_enrol_schedule', 
+                    onschedule_model=onschedule_model,
+                    onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
+
+                self.put_on_schedule(f'{cohort}_fu_schedule',
+                    onschedule_model=onschedule_model,
+                    onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
+
+    def sub_cohort_enrollment(self):
+        pass
+
+    def put_on_schedule(self,schedule_name, onschedule_model, onschedule_datetime=None):
+            _, schedule = site_visit_schedules.get_by_onschedule_model_schedule_name(
+                onschedule_model=onschedule_model, name=schedule_name)
+            schedule.put_on_schedule(
+                subject_identifier=self.subject_identifier,
+                onschedule_datetime=onschedule_datetime,
+                schedule_name=schedule_name)
+
+
+    def is_subcohort_full():
+            onschedule_subcohort = OnSchedule.objects.filter(
+                schedule_name='esr21_sub_enrol_schedule')
+
+            return onschedule_subcohort.count() == 3000
+
+    

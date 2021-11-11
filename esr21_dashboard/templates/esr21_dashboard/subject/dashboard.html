@@ -31,6 +31,16 @@
 {% endblock side_bar %}
 
 {% block visit_schedules_panel %}
+
+	<div class="alert alert-info">
+	<a class="btn btn-md btn-info"  href="main_schedule_enrollment" role="button" >
+      Main Schedule Enrollment
+    </a>
+
+    <a class="btn btn-md btn-success"  href="sub_cohort_enrollment" role="button" >
+      Sub Cohort Enrollment
+    </a>
+</div>
    {% for visit_schedule in visit_schedules.values %}
    		 {% for schedule in visit_schedule.schedules.values %}
    		 {% if schedule.name in schedule_names %} 

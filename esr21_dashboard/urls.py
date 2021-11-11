@@ -1,3 +1,4 @@
+from django.urls.conf import path
 from edc_dashboard import UrlConfig
 
 from .patterns import screening_identifier, subject_identifier
@@ -26,6 +27,9 @@ subject_dashboard_url_config = UrlConfig(
     label='subject_dashboard',
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
+
+path('main_schedule_enrollment',DashboardView.as_view())
+path('sub_cohort_schedule_enrollment',DashboardView.as_view())
 
 urlpatterns = []
 urlpatterns += screening_listboard_url_config.listboard_urls

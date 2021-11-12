@@ -3,7 +3,7 @@
 {% load edc_subject_dashboard_extras %}
 {% load esr21_dashboard_extras %}
 
-{% block scripts %}
+{% block extra_scripts %}
 	 <script>
       function confirm_main_schedule_enrollment() {
 			let confirmAction = confirm("Are you sure  you want to enroll participant in this schedule?");
@@ -23,7 +23,7 @@
 			}
 		}
     </script>
-{% endblock scripts%}
+{% endblock extra_scripts%}
 
 
 {% block locator_information %}{% endblock locator_information %}
@@ -67,7 +67,6 @@
 {% endblock other_special_buttons %}
 	
 {% block visit_schedules_panel %}
-
    {% for visit_schedule in visit_schedules.values %}
    		 {% for schedule in visit_schedule.schedules.values %}
    		 {% if schedule.name in schedule_names %} 
@@ -100,14 +99,11 @@
 	{% block appointments %}
 		{% include "edc_subject_dashboard/dashboard/appointments.html" %}
 	{% endblock appointments %}
-
-
 	</div>
+	{% block appointments_schedule_footer %}
 
-		{% block appointments_schedule_footer %}
-
-			{% subject_schedule_footer_row subject_identifier visit_schedule schedule subject_dashboard_url %}
-		{% endblock appointments_schedule_footer %}	
+		{% subject_schedule_footer_row subject_identifier visit_schedule schedule subject_dashboard_url %}
+	{% endblock appointments_schedule_footer %}	
     	</div>
     	 {% endif %} 
      {% endfor %}

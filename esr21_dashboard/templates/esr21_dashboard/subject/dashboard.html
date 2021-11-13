@@ -3,6 +3,28 @@
 {% load edc_subject_dashboard_extras %}
 {% load esr21_dashboard_extras %}
 
+{% block extra-scripts %}
+	 <script>
+      function confirm_main_schedule_enrollment() {
+			let confirmAction = confirm("Are you sure  you want to enroll participant in this schedule?");
+			if (confirmAction) {
+			window.location.href="{% url subject_dashboard_url subject_identifier %}main_schedule_enrollment";
+			} else {
+			alert("Action canceled");
+			}
+		}
+
+		function confirm_sub_cohort_enrollment() {
+			let confirmAction = confirm("Are you sure  you want to enroll participant in this schedule?");
+			if (confirmAction) {
+			window.location.href="{% url subject_dashboard_url subject_identifier %}sub_cohort_enrollment";
+			} else {
+			alert("Action canceled");
+			}
+		}
+    </script>
+{% endblock extra-scripts %}
+
 
 {% block locator_information %}{% endblock locator_information %}
 
@@ -30,6 +52,20 @@
 	
 {% endblock side_bar %}
 
+{% block other_special_buttons %}
+{% if not has_schedules %}
+	<button class="btn btn-md btn-info"  onclick="confirm_main_schedule_enrollment()">
+		Main Schedule Enrollment
+	</button>
+	{% if not is_subcohort_full %}
+		<button class="btn btn-md btn-success"  onclick="confirm_sub_cohort_enrollment()" role="button" >
+			Sub Cohort Enrollment
+		</button>
+	{% endif %}
+{% endif %}
+
+{% endblock other_special_buttons %}
+	
 {% block visit_schedules_panel %}
    {% for visit_schedule in visit_schedules.values %}
    		 {% for schedule in visit_schedule.schedules.values %}
@@ -63,14 +99,11 @@
 	{% block appointments %}
 		{% include "edc_subject_dashboard/dashboard/appointments.html" %}
 	{% endblock appointments %}
-
-
 	</div>
+	{% block appointments_schedule_footer %}
 
-		{% block appointments_schedule_footer %}
-
-			{% subject_schedule_footer_row subject_identifier visit_schedule schedule subject_dashboard_url %}
-		{% endblock appointments_schedule_footer %}	
+		{% subject_schedule_footer_row subject_identifier visit_schedule schedule subject_dashboard_url %}
+	{% endblock appointments_schedule_footer %}	
     	</div>
     	 {% endif %} 
      {% endfor %}

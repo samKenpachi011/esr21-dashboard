@@ -16,12 +16,14 @@ def eligibility_confirmation_button(model_wrapper):
         href=model_wrapper.href,
         title=' '.join(title))
 
+
 @register.inclusion_tag('esr21_dashboard/buttons/screening_eligibility_button.html')
-def screening_eligibility_button(model_wrapper):    
+def screening_eligibility_button(model_wrapper):
     return dict(
         add_screening_href=model_wrapper.screening.href,
         screening=model_wrapper.screening,
         screening_model_obj=model_wrapper.screening_model_obj)
+
 
 @register.inclusion_tag('esr21_dashboard/buttons/edit_screening_button.html')
 def edit_screening_button(model_wrapper):
@@ -31,6 +33,7 @@ def edit_screening_button(model_wrapper):
         screening=model_wrapper.screening,
         title=' '.join(title)
     )
+
 
 @register.inclusion_tag('esr21_dashboard/buttons/eligibility_button.html')
 def screening_ineligibility_button(model_wrapper):
@@ -92,7 +95,6 @@ def personal_contact_info_button(model_wrapper):
 @register.inclusion_tag('edc_visit_schedule/subject_schedule_footer_row.html')
 def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
                                 subject_dashboard_url):
-
     context = {}
     try:
         history_obj = SubjectScheduleHistory.objects.get(
@@ -103,7 +105,7 @@ def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
     except SubjectScheduleHistory.DoesNotExist:
         onschedule_model_obj = schedule.onschedule_model_cls.objects.get(
             subject_identifier=subject_identifier,
-            schedule_name=schedule.name,)
+            schedule_name=schedule.name, )
         options = dict(subject_identifier=subject_identifier)
         query = unquote(urlencode(options))
         href = (f'{visit_schedule.offstudy_model_cls().get_absolute_url()}?next='
@@ -142,4 +144,14 @@ def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
         visit_schedule=visit_schedule,
         schedule=schedule,
         verbose_name=visit_schedule.offstudy_model_cls._meta.verbose_name)
+    return context
+
+
+@register.inclusion_tag('esr21_dashboard/buttons/subject_offstudy_button.html')
+def subject_offstudy_button(modelwrapper):
+
+    context = {
+        'title': 'Subject Offstudy',
+        'href': modelwrapper.href,
+    }
     return context

@@ -8,16 +8,16 @@ from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
 from .dashboard_view_mixin import DashboardViewMixin
 from ....model_wrappers import InformedConsentModelWrapper
-from ....model_wrappers import AppointmentModelWrapper, ContactInformationModelWrapper
+from ....model_wrappers import AppointmentModelWrapper, ContactInformationModelWrapper, SubjectOffStudyModelWrapper
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 from esr21_subject.models import OnSchedule, ScreeningEligibility
 from django.shortcuts import redirect
 from django.http import Http404
+from django.apps import apps as django_apps
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
-
     dashboard_url = 'subject_dashboard_url'
     dashboard_template = 'subject_dashboard_template'
     appointment_model = 'edc_appointment.appointment'
@@ -32,13 +32,37 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     subject_locator_model = 'esr21_subject.personalcontactinfo'
 
     @property
+    def subject_offstudy_wrapper(self):
+        """
+        - Used to create an instance of the subject offstudy if the offstudy form is filled,
+        then pass the instance to the context so can be used in the special forms.
+        - If not filled, a none object will returned so that the button cannot be rendered by the template
+        """
+
+        # getting the class for offstudy
+        subject_offstudy_cls = django_apps.get_model('esr21_prn.subjectoffstudy')
+
+        try:
+            # get offstudy instance
+            subject_offstudy_obj = subject_offstudy_cls.objects.get(subject_identifier=self.subject_identifier)
+        except subject_offstudy_cls.DoesNotExist:
+            # If the offstudy does not exist
+            return None
+        else:
+            # create instance of the wrapper
+            subject_offstudy_wrapper = SubjectOffStudyModelWrapper(model_obj=subject_offstudy_obj)
+
+            # return instance so it can be used in the context
+            return subject_offstudy_wrapper
+
+    @property
     def appointments(self):
         """Returns a Queryset of all appointments for this subject.
         """
         if not self._appointments:
             self._appointments = self.appointment_model_cls.objects.filter(
                 subject_identifier=self.subject_identifier).order_by(
-                    'visit_code')
+                'visit_code')
         return self._appointments
 
     def get_onschedule_model_obj(self, schedule):
@@ -56,19 +80,20 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         if 'main_schedule_enrollment' in self.request.path:
             self.main_schedule_enrollment()
-        
+
         if 'sub_cohort_enrollment' in self.request.path:
             self.sub_cohort_enrollment()
-        
-        #import pdb; pdb.set_trace()
+
+        # import pdb; pdb.set_trace()
 
         context.update(
             locator_obj=locator_obj,
             subject_consent=self.consent_wrapped,
             schedule_names=[model.schedule_name for model in self.onschedule_models],
             is_subcohort_full=self.is_subcohort_full(),
-            has_schedules=self.has_schedules()
-        ) 
+            has_schedules=self.has_schedules(),
+            subject_offstudy=self.subject_offstudy_wrapper
+        )
 
         return context
 
@@ -83,8 +108,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         return obj
 
     def set_current_schedule(self, onschedule_model_obj=None,
-                            schedule=None, visit_schedule=None,
-                            is_onschedule=True):
+                             schedule=None, visit_schedule=None,
+                             is_onschedule=True):
         if onschedule_model_obj:
             if is_onschedule:
                 self.current_schedule = schedule
@@ -103,13 +128,13 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             pass
         else:
             if screening_eligibility.is_eligible:
-                self.put_on_schedule(f'{cohort}_enrol_schedule', 
-                    onschedule_model=onschedule_model,
-                    onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
+                self.put_on_schedule(f'{cohort}_enrol_schedule',
+                                     onschedule_model=onschedule_model,
+                                     onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
 
                 self.put_on_schedule(f'{cohort}_fu_schedule',
-                    onschedule_model=onschedule_model,
-                    onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
+                                     onschedule_model=onschedule_model,
+                                     onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
 
     def sub_cohort_enrollment(self):
         cohort = 'esr21_sub'
@@ -121,29 +146,27 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                 pass
             else:
                 if screening_eligibility.is_eligible:
-                    self.put_on_schedule(f'{cohort}_enrol_schedule', 
-                        onschedule_model=onschedule_model,
-                        onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
+                    self.put_on_schedule(f'{cohort}_enrol_schedule',
+                                         onschedule_model=onschedule_model,
+                                         onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
 
                     self.put_on_schedule(f'{cohort}_fu_schedule',
-                        onschedule_model=onschedule_model,
-                        onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
-        
+                                         onschedule_model=onschedule_model,
+                                         onschedule_datetime=screening_eligibility.created.replace(microsecond=0))
 
-    def put_on_schedule(self,schedule_name, onschedule_model, onschedule_datetime=None):
-            _, schedule = site_visit_schedules.get_by_onschedule_model_schedule_name(
-                onschedule_model=onschedule_model, name=schedule_name)
-            schedule.put_on_schedule(
-                subject_identifier=self.subject_identifier,
-                onschedule_datetime=onschedule_datetime,
-                schedule_name=schedule_name)
-
+    def put_on_schedule(self, schedule_name, onschedule_model, onschedule_datetime=None):
+        _, schedule = site_visit_schedules.get_by_onschedule_model_schedule_name(
+            onschedule_model=onschedule_model, name=schedule_name)
+        schedule.put_on_schedule(
+            subject_identifier=self.subject_identifier,
+            onschedule_datetime=onschedule_datetime,
+            schedule_name=schedule_name)
 
     def is_subcohort_full(self):
-            onschedule_subcohort = OnSchedule.objects.filter(
-                schedule_name='esr21_sub_enrol_schedule')
-            return onschedule_subcohort.count() == 3000
-    
+        onschedule_subcohort = OnSchedule.objects.filter(
+            schedule_name='esr21_sub_enrol_schedule')
+        return onschedule_subcohort.count() == 3000
+
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if 'main_schedule_enrollment' in self.request.path:
@@ -154,11 +177,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return redirect(url)
         else:
             return self.render_to_response(context)
-    
+
     def has_schedules(self):
         onschedule = OnSchedule.objects.filter(
-                subject_identifier=self.subject_identifier)
+            subject_identifier=self.subject_identifier)
         return onschedule.count() > 0
-
-
-    

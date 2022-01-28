@@ -27,6 +27,7 @@
             href: (model_wrapper.href)
 
 	{% endcomment %}
+	
 	<td style="white-space: nowrap">
     <div class="btn-group">
     <a title="Edit subject's consent form" role="button" 
@@ -34,18 +35,30 @@
            href="{{ result.href }}">
         <i class="fa fa-pencil-alt fa-sm"></i>
     </a>
-    {% if result.id %}
+    {% if result.id and result.is_eligible %}
 
          <a id="btn-subject-dashboard-{{result.subject_identifier}}" class="btn btn-primary btn-sm" role="button"   
         	title="Go to subject's dashboard" href="{% url subject_dashboard_url result.subject_identifier %}">
         	<i class="far fa-user-circle fa-sm"></i> Dashboard  <i class="fa fa-share"></i></a>
+    
+     {% else %}
+     
+    	<div class="btn-group">
+			<a type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+			Not eligible <span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="#"><small>{{ result.reasons_ineligible }}</small></a></li>
+			</ul>
+		</div>
     {% endif %}
     </div>
 	</td>
 {% endblock listboard_table_button_column %}
 
 {% block listboard_table_columns %}
-    <td>{{ result.subject_identifier }}
+	<td>
+		{{ result.subject_identifier }}
     </td>
     <td>
        {% if result.gender == 'M' %}
@@ -59,5 +72,4 @@
     <td>{{ result.object.consent_datetime|date:"SHORT_DATE_FORMAT" }}</td>  
     <td>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>
     <td>{{ result.hostname_created }}</td>
-
 {% endblock listboard_table_columns %}

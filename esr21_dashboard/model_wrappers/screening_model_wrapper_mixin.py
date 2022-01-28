@@ -24,7 +24,6 @@ class ScreeningModelWrapperMixin:
         """
         model_obj = self.screening_model_obj or self.screening_cls(
             **self.create_screening_cls_options)
-        #import pdb; pdb.set_trace()
         return ScreeningEligibilityModelWrapper(model_obj=model_obj)
 
     @property

@@ -3,10 +3,22 @@
 <table class="table table-condensed">
     <thead></thead>
     <tbody>
-      	<tr>
-		<td>
-			{% personal_contact_info_button subject_consent %}
-		</td>
-      	</tr>
+    <tr>
+        <td>
+            {% personal_contact_info_button subject_consent %}
+        </td>
+    </tr>
+
+    {% if subject_offstudy %}
+        {# subject_offstudy to be vaulated first before rendering the button  #}
+        <tr>
+            <td>
+                {# the offstudy button #}
+                {% subject_offstudy_button subject_offstudy %}
+            </td>
+        </tr>
+
+    {% endif %}
+
     </tbody>
 </table>

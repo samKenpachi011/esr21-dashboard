@@ -1,16 +1,18 @@
-from django.apps import apps as django_apps
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
-from edc_base.utils import get_uuid
 from edc_model_wrapper import ModelWrapper
 
-from edc_consent import ConsentModelWrapperMixin
+from .subject_consent_wrapper_mixin import SubjectConsentWrapperMixin
 
 from .informed_consent_model_wrapper import InformedConsentModelWrapper
 from .screening_model_wrapper_mixin import ScreeningModelWrapperMixin
+from django.apps import apps as django_apps
+from django.core.exceptions import ObjectDoesNotExist
+from edc_base.utils import get_uuid
 
 
-class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin, ConsentModelWrapperMixin, ModelWrapper):
+class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
+                                   SubjectConsentWrapperMixin,
+                                   ModelWrapper):
 
     consent_model_wrapper_cls = InformedConsentModelWrapper
     model = 'esr21_subject.eligibilityconfirmation'
@@ -21,12 +23,6 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin, ConsentModelWrapp
     @property
     def consented(self):
         return self.object.subject_identifier
-
-    @property
-    def subject_identifier(self):
-        if self.consent_model_obj:
-            return self.consent_model_obj.subject_identifier
-        return None
 
     @property
     def consent_model_obj(self):
@@ -41,22 +37,19 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin, ConsentModelWrapp
     @property
     def create_consent_options(self):
         options = super().create_consent_options
+
         options.update(
             screening_identifier=self.screening_identifier,
             consent_identifier=get_uuid(),
             version=self.consent_version)
+
+        if self.consent_version_1_model_obj:
+            options.update(**self.create_consent_v1_options)
         return options
 
     @property
-    def consent_options(self):
-        """Returns a dictionary of options to get an existing
-        consent model instance.
-        """
-        options = dict(
-            screening_identifier=self.object.screening_identifier,
-            version=self.consent_version)
-        return options
-
-    @property
-    def consent_version(self):
-        return '1'
+    def subject_identifier(self):
+        consent_model = self.consent_model_obj or self.consent_version_1_model_obj
+        if consent_model:
+            return consent_model.subject_identifier
+        return None

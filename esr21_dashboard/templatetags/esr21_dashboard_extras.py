@@ -17,6 +17,14 @@ def eligibility_confirmation_button(model_wrapper):
         title=' '.join(title))
 
 
+@register.inclusion_tag('esr21_dashboard/buttons/vaccination_history_button.html')
+def vaccination_history_button(model_wrapper):
+    return dict(
+        add_vaccination_history_href=model_wrapper.vaccination_history.href,
+        vaccination_history=model_wrapper.vaccination_history,
+        vaccination_history_model_obj=model_wrapper.vaccination_history_model_obj)
+
+
 @register.inclusion_tag('esr21_dashboard/buttons/screening_eligibility_button.html')
 def screening_eligibility_button(model_wrapper):
     return dict(

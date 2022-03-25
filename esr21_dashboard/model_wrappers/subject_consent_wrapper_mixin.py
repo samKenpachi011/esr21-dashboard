@@ -47,6 +47,8 @@ class SubjectConsentWrapperMixin(ConsentModelWrapperMixin):
             for option in exclude_options:
                 del consent_version_1[option]
 
+            # Update DOB date format
+            consent_version_1.update({'dob': consent_version_1.get('dob').strftime('%d %B %Y')})
             options.update(**consent_version_1)
         return options
 

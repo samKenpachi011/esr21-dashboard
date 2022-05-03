@@ -4,19 +4,40 @@ from django.core.exceptions import ObjectDoesNotExist
 from edc_model_wrapper import ModelWrapper
 
 from .contact_information_model_wrapper_mixin import ContactInformationWrapperMixin
+from .subject_consent_wrapper_mixin import SubjectConsentWrapperMixin
+from .vaccination_history_model_wrapper_mixin import VaccinationHistoryModelWrapperMixin
 
 
-class InformedConsentModelWrapper(ContactInformationWrapperMixin, ModelWrapper):
+class InformedConsentModelWrapper(ContactInformationWrapperMixin,
+                                  SubjectConsentWrapperMixin,
+                                  VaccinationHistoryModelWrapperMixin,
+                                  ModelWrapper):
 
     model = 'esr21_subject.informedconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'screening_listboard_url')
     next_url_attrs = ['screening_identifier']
-    querystring_attrs = ['screening_identifier', 'subject_identifier']
+
+    @property
+    def querystring_attrs(self):
+        options = ['subject_identifier']
+        options.extend(self.create_consent_v1_options.keys())
+        return options
+
+    @property
+    def subject_identifier(self):
+        consent_model = self.consent_model_obj or self.consent_version_1_model_obj
+        if consent_model:
+            return consent_model.subject_identifier
+        return None
 
     @property
     def screening_cls(self):
         return django_apps.get_model('esr21_subject.screeningeligibility')
+
+    @property
+    def subject_consent_cls(self):
+        return django_apps.get_model('esr21_subject.informedconsent')
 
     @property
     def screening_model_obj(self):
@@ -48,3 +69,13 @@ class InformedConsentModelWrapper(ContactInformationWrapperMixin, ModelWrapper):
         if self.screening_model_obj:
             return self.screening_model_obj.ineligibility
         return False
+
+    @property
+    def consent_model_obj(self):
+        """Returns a consent model instance or None.
+        """
+        consent_model_cls = django_apps.get_model(self.model)
+        try:
+            return consent_model_cls.objects.get(**self.consent_options)
+        except ObjectDoesNotExist:
+            return None

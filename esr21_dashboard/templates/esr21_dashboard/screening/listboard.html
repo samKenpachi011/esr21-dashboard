@@ -43,7 +43,10 @@
             {% else %}
                 {% screening_eligibility_button result %} 
                 {% if result.screening %}
-                    {% dashboard_button result %}
+                	{% vaccination_history_button result %}
+	                {% if result.vaccination_history %}
+	                    {% dashboard_button result %}
+	                {% endif %}
                 {% endif %}
             {% endif %}
         {% endif %}

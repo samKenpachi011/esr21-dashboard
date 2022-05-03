@@ -1,0 +1,11 @@
+ <a id="vaccination_history_add_{{ subject_identifier }}" 
+ 	title="{{ title }}"
+	{% if not vaccination_history %}
+    	class="btn btn-warning btn-sm" data-toggle="tooltip"  data-placement="right"
+        href="{{ add_vaccination_history_href }}">
+	{% else %}
+	    class="btn btn-success btn-sm" data-toggle="tooltip"  data-placement="right"
+        href="{{ add_vaccination_history_href }}">
+    {% endif %}
+	Vaccination History
+ </a>

@@ -19,6 +19,10 @@
         </tr>
 
     {% endif %}
-
+	{% if subject_consent.vaccination_history_model_obj %}
+		<tr>
+			{% vaccination_history_button subject_consent %}
+		</tr>
+	{% endif %}
     </tbody>
 </table>

@@ -6,6 +6,7 @@ from edc_constants.constants import YES
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
+from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 from esr21_subject.helper_classes import EnrollmentHelper
 
 from .dashboard_view_mixin import DashboardViewMixin
@@ -14,6 +15,8 @@ from ....model_wrappers import AppointmentModelWrapper, ContactInformationModelW
 
 from django.shortcuts import redirect
 from django.apps import apps as django_apps
+from edc_base.utils import get_utcnow
+from django.contrib import messages
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -29,9 +32,17 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     special_forms_include_value = "esr21_dashboard/subject/dashboard/special_forms.html"
     navbar_name = 'esr21_dashboard'
     navbar_selected_item = 'consented_subject'
-    subject_locator_model = 'esr21_subject.personalcontactinfo'
     onschedule_model = 'esr21_subject.onschedule'
     schedule_enrollment = EnrollmentHelper
+    vaccination_details_model = 'esr21_subject.vaccinationdetails'
+
+    @property
+    def vaccination_details_cls(self):
+        return django_apps.get_model(self.vaccination_details_model)
+
+    @property
+    def vaccination_history_cls(self):
+        return django_apps.get_model('esr21_subject.vaccinationhistory')
 
     @property
     def onschedule_model_cls(self):
@@ -88,7 +99,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             self.enrol_subject(cohort='esr21')
 
         if 'sub_cohort_enrollment' in self.request.path:
-            self.enrol_subject(cohort='esr21_sub')
+            if not self.is_subcohort_full():
+                self.enrol_subject(cohort='esr21_sub')
+            else:
+                messages.add_message(self.request, messages.ERROR,
+                                     'The sub cohort is full.')
+
+        if 'booster_enrollment' in self.request.path:
+            self.booster_enrollment()
 
         context.update(
             locator_obj=locator_obj,
@@ -96,7 +114,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             schedule_names=[model.schedule_name for model in self.onschedule_models],
             is_subcohort_full=self.is_subcohort_full(),
             has_schedules=self.has_schedules(),
-            subject_offstudy=self.subject_offstudy_wrapper
+            subject_offstudy=self.subject_offstudy_wrapper,
+            booster_due=self.booster_due
         )
 
         return context
@@ -105,6 +124,64 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         schedule_enrollment = self.schedule_enrollment(
             cohort=cohort, subject_identifier=self.subject_identifier)
         schedule_enrollment.schedule_enrol()
+
+    @property
+    def booster_due(self):
+        schedules = ['esr21_enrol_schedule', 'esr21_sub_enrol_schedule']
+        schedule_names = [model.schedule_name for model in self.onschedule_models]
+
+        if ('esr21_boost_schedule' not in schedule_names and
+                'esr21_sub_boost_schedule' not in schedule_names):
+            try:
+                first_dose = self.vaccination_details_cls.objects.get(
+                    subject_visit__subject_identifier=self.kwargs.get('subject_identifier'),
+                    subject_visit__schedule_name__in=schedules,
+                    received_dose=YES,
+                    received_dose_before='first_dose')
+            except self.vaccination_details_cls.DoesNotExist:
+                return None
+            else:
+                print((get_utcnow() - first_dose.vaccination_date).days)
+                return (get_utcnow() - first_dose.vaccination_date).days >= 170
+
+    def booster_enrollment(self):
+        schedule_names = [model.schedule_name for model in self.onschedule_models]
+        cohort = None
+        if 'esr21_sub_enrol_schedule' in schedule_names:
+            cohort = 'esr21_sub'
+            if not self.is_subcohort_full():
+                self.enrol_booster(cohort=cohort)
+            else:
+                messages.add_message(self.request, messages.ERROR,
+                                     'The sub cohort is full.')
+        else:
+            cohort = 'esr21'
+            self.enrol_subject(cohort=cohort)
+
+    def enrol_booster(self, cohort=None):
+        onschedule_model = 'esr21_subject.onschedule'
+
+        onschedule_dt = get_utcnow()
+        try:
+            history = self.vaccination_history_cls.objects.get(
+                subject_identifier=self.kwargs.get('subject_identifier'))
+        except self.vaccination_history_cls.DoesNotExist:
+            raise Exception('Missing vaccination history form.')
+        else:
+            if history.received_vaccine == YES and history.dose_quantity == '2':
+                self.put_on_schedule(
+                    f'{cohort}_boost_schedule',
+                    onschedule_model=onschedule_model,
+                    onschedule_datetime=onschedule_dt.replace(microsecond=0))
+
+    def put_on_schedule(self, schedule_name, onschedule_model,
+                        onschedule_datetime=None):
+        _, schedule = site_visit_schedules.get_by_onschedule_model_schedule_name(
+            onschedule_model=onschedule_model, name=schedule_name)
+        schedule.put_on_schedule(
+            subject_identifier=self.subject_identifier,
+            onschedule_datetime=onschedule_datetime,
+            schedule_name=schedule_name)
 
     def get_locator_info(self):
 
@@ -130,8 +207,11 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
     def is_subcohort_full(self):
         onschedule_subcohort = self.onschedule_model_cls.objects.filter(
-            schedule_name='esr21_sub_enrol_schedule')
-        return onschedule_subcohort.count() == 3000
+            schedule_name__in=['esr21_sub_enrol_schedule',
+                               'esr21_sub_enrol_schedule3',
+                               'esr21_sub_fu_schedule3',
+                               'esr21_sub_boost_schedule'])
+        return onschedule_subcohort.count() == 900
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -140,6 +220,9 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return redirect(url)
         elif 'sub_cohort_enrollment' in self.request.path:
             url = self.request.path.split('sub_cohort_enrollment')[0]
+            return redirect(url)
+        elif 'booster_enrollment' in self.request.path:
+            url = self.request.path.split('booster_enrollment')[0]
             return redirect(url)
         else:
             return self.render_to_response(context)

@@ -115,7 +115,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             is_subcohort_full=self.is_subcohort_full(),
             has_schedules=self.has_schedules(),
             subject_offstudy=self.subject_offstudy_wrapper,
-            booster_due=self.booster_due
+            booster_due=self.booster_due,
+            show_schedule_buttons=self.show_schedule_buttons
         )
 
         return context
@@ -231,3 +232,25 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         onschedule = self.onschedule_model_cls.objects.filter(
             subject_identifier=self.subject_identifier)
         return onschedule.count() > 0
+
+    @property
+    def show_schedule_buttons(self):
+        try:
+            vaccination_history = self.vaccination_history_cls.objects.get(
+                subject_identifier=self.subject_identifier)
+        except self.vaccination_history_cls.DoesNotExist:
+            pass
+        else:
+            received_vaccine = vaccination_history.received_vaccine
+            if received_vaccine:
+                dose_quantity = vaccination_history.dose_quantity
+                if dose_quantity == '1':
+                    last_dose_received = vaccination_history.dose1_date
+                    if (get_utcnow().date() - last_dose_received).days >= 56:
+                        return True
+                elif dose_quantity == '2':
+                    last_dose_received = vaccination_history.dose2_date
+                    if (get_utcnow().date() - last_dose_received).days >= 86:
+                        return True
+                return False
+            return True

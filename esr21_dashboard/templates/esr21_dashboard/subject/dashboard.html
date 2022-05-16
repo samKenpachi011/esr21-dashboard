@@ -62,7 +62,7 @@
 {% endblock side_bar %}
 
 {% block other_special_buttons %}
-{% if not has_schedules %}
+{% if not has_schedules and show_schedule_buttons %}
 	<button class="btn btn-md btn-info"  onclick="confirm_main_schedule_enrollment()">
 		Main Schedule Enrollment
 	</button>

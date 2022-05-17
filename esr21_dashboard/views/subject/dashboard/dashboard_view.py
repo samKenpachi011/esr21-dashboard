@@ -242,7 +242,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             pass
         else:
             received_vaccine = vaccination_history.received_vaccine
-            if received_vaccine:
+            if received_vaccine == YES:
                 dose_quantity = vaccination_history.dose_quantity
                 if dose_quantity == '1':
                     last_dose_received = vaccination_history.dose1_date

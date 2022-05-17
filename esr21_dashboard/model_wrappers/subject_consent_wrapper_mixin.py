@@ -1,8 +1,4 @@
 from edc_consent import ConsentModelWrapperMixin
-from edc_consent.site_consents import site_consents
-from datetime import datetime
-from django.utils.timezone import make_aware
-import pytz
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -13,11 +9,13 @@ class SubjectConsentWrapperMixin(ConsentModelWrapperMixin):
 
     @property
     def consent_version(self):
-        consent_datetime = datetime.now()
-        tz = pytz.timezone('Africa/Gaborone')
-        consent_datetime = make_aware(consent_datetime, tz, True)
-        consent = site_consents.get_consent(report_datetime=consent_datetime)
-        return consent.version
+        try:
+            consent = self.consent_model_cls.objects.filter(
+                screening_identifier=self.object.screening_identifier).latest('created')
+        except self.consent_model_cls.DoesNotExist:
+            return '3'
+        else:
+            return consent.version
 
     @property
     def consent_options(self):
@@ -60,7 +58,10 @@ class SubjectConsentWrapperMixin(ConsentModelWrapperMixin):
             screening_identifier=self.screening_identifier,
             version='1')
         try:
-            consent_model_cls = django_apps.get_model(self.consent_model)
-            return consent_model_cls.objects.get(**options)
+            return self.consent_model_cls.objects.get(**options)
         except ObjectDoesNotExist:
             return None
+
+    @property
+    def consent_model_cls(self):
+        return django_apps.get_model(self.consent_model)

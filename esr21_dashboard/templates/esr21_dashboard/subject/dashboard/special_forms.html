@@ -24,5 +24,11 @@
 			{% vaccination_history_button subject_consent %}
 		</tr>
 	{% endif %}
+
+    {% if not reconsented %}
+    <tr>
+        {% consent_v3_button wrapped_consent_v3 %}
+    </tr>
+    {% endif %}
     </tbody>
 </table>

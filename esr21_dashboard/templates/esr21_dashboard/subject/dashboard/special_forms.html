@@ -21,13 +21,17 @@
     {% endif %}
 	{% if subject_consent.vaccination_history_model_obj %}
 		<tr>
+            <td>
 			{% vaccination_history_button subject_consent %}
+            </td>
 		</tr>
 	{% endif %}
 
     {% if not reconsented %}
     <tr>
+        <td>
         {% consent_v3_button wrapped_consent_v3 %}
+        </td>
     </tr>
     {% endif %}
     </tbody>

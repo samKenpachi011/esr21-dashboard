@@ -41,6 +41,10 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         return django_apps.get_model(self.vaccination_details_model)
 
     @property
+    def consent_model_cls(self):
+        return django_apps.get_model(self.consent_model)
+
+    @property
     def vaccination_history_cls(self):
         return django_apps.get_model('esr21_subject.vaccinationhistory')
 
@@ -107,7 +111,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         if 'booster_enrollment' in self.request.path:
             self.booster_enrollment()
-
         context.update(
             locator_obj=locator_obj,
             subject_consent=self.consent_wrapped,
@@ -116,7 +119,9 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             has_schedules=self.has_schedules(),
             subject_offstudy=self.subject_offstudy_wrapper,
             booster_due=self.booster_due,
-            show_schedule_buttons=self.show_schedule_buttons
+            show_schedule_buttons=self.show_schedule_buttons,
+            wrapped_consent_v3=self.wrapped_consent_v3,
+            reconsented=self.reconsented,
         )
 
         return context
@@ -254,3 +259,58 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                         return True
                 return False
             return True
+
+    @property
+    def wrapped_consent_v3(self):
+        model_obj = self.consent_model_cls(
+            **self.create_consent_v3_options)
+        return self.consent_model_wrapper_cls(model_obj=model_obj)
+
+    @property
+    def consent_version_1_model_obj(self):
+        """Returns a consent version 1 model instance or None.
+        """
+        options = dict(
+            subject_identifier=self.subject_identifier,
+            version='1')
+        try:
+            return self.consent_model_cls.objects.get(**options)
+        except ObjectDoesNotExist:
+            return None
+
+    @property
+    def create_consent_v3_options(self):
+        options = {}
+        if self.consent_version_1_model_obj:
+            consent_version_1 = self.consent_version_1_model_obj.__dict__
+            exclude_options = ['_state', 'consent_datetime', 'report_datetime',
+                               'consent_identifier', 'version', 'id',
+                               'subject_identifier_as_pk', 'created',
+                               'subject_identifier_aka', 'modified',
+                               'site_id', 'device_created', 'device_modified',
+                               'hostname_modified', 'user_modified',
+                               'hostname_created', 'user_created',
+                               'revision', 'slug', 'subject_identifier',
+                               ]
+            for option in exclude_options:
+                del consent_version_1[option]
+
+            # Update DOB date format
+            consent_version_1.update({
+                'dob': consent_version_1.get('dob').strftime('%d %B %Y'),
+                'version': '3'
+                })
+            options.update(**consent_version_1)
+        return options
+
+    @property
+    def reconsented(self):
+        options = dict(
+            subject_identifier=self.subject_identifier,
+            version='3')
+        try:
+            return self.consent_model_cls.objects.get(**options)
+        except ObjectDoesNotExist:
+            return False
+        else:
+            True

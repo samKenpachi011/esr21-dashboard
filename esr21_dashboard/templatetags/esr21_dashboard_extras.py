@@ -163,3 +163,14 @@ def subject_offstudy_button(modelwrapper):
         'href': modelwrapper.href,
     }
     return context
+
+
+@register.inclusion_tag('esr21_dashboard/buttons/consent_button.html')
+def consent_v3_button(model_wrapper):
+    title = ['Consent subject to participate.']
+    return dict(
+        screening_identifier=model_wrapper.object.screening_identifier,
+        subject_identifier=model_wrapper.object.subject_identifier,
+        add_consent_href=model_wrapper.href,
+        consent_version='3',
+        title=' '.join(title))

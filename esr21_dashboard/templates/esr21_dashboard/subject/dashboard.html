@@ -22,6 +22,15 @@
 			alert("Action canceled");
 			}
 		}
+
+		function confirm_booster_enrollment() {
+			let confirmAction = confirm("Are you sure  you want to enroll participant in this schedule?");
+			if (confirmAction) {
+			window.location.href="{% url subject_dashboard_url subject_identifier %}booster_enrollment";
+			} else {
+			alert("Action canceled");
+			}
+		}
     </script>
 {% endblock extra-scripts %}
 
@@ -53,7 +62,7 @@
 {% endblock side_bar %}
 
 {% block other_special_buttons %}
-{% if not has_schedules %}
+{% if not has_schedules and show_schedule_buttons %}
 	<button class="btn btn-md btn-info"  onclick="confirm_main_schedule_enrollment()">
 		Main Schedule Enrollment
 	</button>
@@ -62,6 +71,11 @@
 			Sub Cohort Enrollment
 		</button>
 	{% endif %}
+{% endif %}
+{% if booster_due %}
+	<button class="btn btn-md btn-info"  onclick="confirm_booster_enrollment()">
+		Booster Enrollment
+	</button>
 {% endif %}
 
 {% endblock other_special_buttons %}

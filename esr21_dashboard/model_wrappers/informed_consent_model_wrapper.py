@@ -26,7 +26,7 @@ class InformedConsentModelWrapper(ContactInformationWrapperMixin,
 
     @property
     def subject_identifier(self):
-        consent_model = self.consent_model_obj or self.consent_version_1_model_obj
+        consent_model = self.consent_model_obj
         if consent_model:
             return consent_model.subject_identifier
         return None

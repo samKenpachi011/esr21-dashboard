@@ -1,6 +1,5 @@
 from edc_consent import ConsentModelWrapperMixin
 from django.apps import apps as django_apps
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class SubjectConsentWrapperMixin(ConsentModelWrapperMixin):
@@ -31,8 +30,10 @@ class SubjectConsentWrapperMixin(ConsentModelWrapperMixin):
     @property
     def create_consent_v1_options(self):
         options = {}
-        if self.consent_version_1_model_obj:
-            consent_version_1 = self.consent_version_1_model_obj.__dict__
+        consent_model_obj = self.consent_model_obj
+
+        if consent_model_obj:
+            consent_model_dict = consent_model_obj.__dict__
             exclude_options = ['_state', 'consent_datetime', 'report_datetime',
                                'consent_identifier', 'version', 'id',
                                'subject_identifier_as_pk', 'created',
@@ -43,24 +44,12 @@ class SubjectConsentWrapperMixin(ConsentModelWrapperMixin):
                                'revision', 'slug', 'subject_identifier',
                                ]
             for option in exclude_options:
-                del consent_version_1[option]
+                del consent_model_dict[option]
 
             # Update DOB date format
-            consent_version_1.update({'dob': consent_version_1.get('dob').strftime('%d %B %Y')})
-            options.update(**consent_version_1)
+            consent_model_dict.update({'dob': consent_model_dict.get('dob').strftime('%d %B %Y')})
+            options.update(**consent_model_dict)
         return options
-
-    @property
-    def consent_version_1_model_obj(self):
-        """Returns a consent version 1 model instance or None.
-        """
-        options = dict(
-            screening_identifier=self.screening_identifier,
-            version='1')
-        try:
-            return self.consent_model_cls.objects.get(**options)
-        except ObjectDoesNotExist:
-            return None
 
     @property
     def consent_model_cls(self):

@@ -45,13 +45,11 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
             consent_identifier=get_uuid(),
             version=self.consent_version)
 
-        if self.consent_version_1_model_obj:
-            options.update(**self.create_consent_v1_options)
         return options
 
     @property
     def subject_identifier(self):
-        consent_model = self.consent_model_obj or self.consent_version_1_model_obj
+        consent_model = self.consent_model_obj
         if consent_model:
             return consent_model.subject_identifier
         return None

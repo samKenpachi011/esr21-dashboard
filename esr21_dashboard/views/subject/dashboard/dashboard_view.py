@@ -162,7 +162,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                                      'The sub cohort is full.')
         else:
             cohort = 'esr21'
-            self.enrol_subject(cohort=cohort)
+            self.enrol_booster(cohort=cohort)
 
     def enrol_booster(self, cohort=None):
         onschedule_model = 'esr21_subject.onschedule'

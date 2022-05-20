@@ -147,8 +147,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             except self.vaccination_details_cls.DoesNotExist:
                 return None
             else:
-                print((get_utcnow() - first_dose.vaccination_date).days)
-                return (get_utcnow() - first_dose.vaccination_date).days >= 170
+                return (get_utcnow() - first_dose.vaccination_date).days >= 156
 
     def booster_enrollment(self):
         schedule_names = [model.schedule_name for model in self.onschedule_models]

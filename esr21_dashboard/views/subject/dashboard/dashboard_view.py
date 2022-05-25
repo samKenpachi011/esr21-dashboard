@@ -177,7 +177,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                 self.put_on_schedule(
                     f'{cohort}_boost_schedule',
                     onschedule_model=onschedule_model,
-                    onschedule_datetime=onschedule_dt.replace(microsecond=0))
+                    onschedule_datetime=onschedule_dt.replace(second=0, microsecond=0))
 
     def put_on_schedule(self, schedule_name, onschedule_model,
                         onschedule_datetime=None):

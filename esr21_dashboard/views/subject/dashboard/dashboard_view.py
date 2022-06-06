@@ -171,7 +171,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             history = self.vaccination_history_cls.objects.get(
                 subject_identifier=self.kwargs.get('subject_identifier'))
         except self.vaccination_history_cls.DoesNotExist:
-            raise Exception('Missing vaccination history form.')
+            messages.add_message(self.request, messages.ERROR,
+                                 'Missing vaccination history form.')
         else:
             if history.received_vaccine == YES and history.dose_quantity == '2':
                 self.put_on_schedule(

@@ -4,4 +4,5 @@ from .informed_consent_model_wrapper import InformedConsentModelWrapper
 from .subject_screening_model_wrapper import SubjectScreeningModelWrapper
 from .subject_visit_model_wrapper import SubjectVisitModelWrapper
 from .subject_offstudy_model_wrapper import SubjectOffStudyModelWrapper
+from .deviations_model_wrapper import ProtocolDeviationsModelWrapper
 # from .screening_eligibility_wrapper import ScreeningEligibilityModelWrapper

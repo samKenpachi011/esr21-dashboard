@@ -58,8 +58,24 @@
         {% include "esr21_dashboard/subject/dashboard/locator_info.html" %}   
   	</div>
   	{% endif %}
+
+	<br>
+	{% if locator_obj %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          <h6 class="panel-title">
+              <i class="fa fa-info-circle fa-lg fa-fw"></i> Locator Info
+          </h6>
+      </div>
+      
+        {% include "esr21_dashboard/subject/dashboard/deviation_info.html" %}   
+  	</div>
+  	{% endif %}  
+	
 	
 {% endblock side_bar %}
+
+
 
 {% block other_special_buttons %}
 {% if not has_schedules and show_schedule_buttons %}

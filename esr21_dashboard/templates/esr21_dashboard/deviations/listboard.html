@@ -1,0 +1,16 @@
+{% comment %} {% extends "edc_dashboard/listboard.html" %} {% endcomment %}
+{% load admin_urls %}
+{% load edc_base_extras %}
+{% load esr21_dashboard_extras %}
+
+
+{% block listboard_panel %}
+    <a id="protocoldeviation_add" title="Add Deviation" class="btn btn-sm btn-default" role="button" 
+        href="{{ protocol_deviation_add_url }}">
+            <i class="fa fa-plus fa-sm"></i> Protocol Deviation
+    </a>
+    <a id="return_to_home" title="go back" class="btn btn-sm btn-default" role="button" 
+        href="/">
+            <i class="fa fa-arrow-left fa-sm"></i> Go Back
+    </a>
+{% endblock listboard_panel %}

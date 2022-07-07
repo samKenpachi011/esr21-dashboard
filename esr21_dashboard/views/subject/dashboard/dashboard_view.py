@@ -98,6 +98,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
+        deviations = self.get_deviations()
 
         if 'main_schedule_enrollment' in self.request.path:
             self.enrol_subject(cohort='esr21')
@@ -122,6 +123,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
+            deviations=deviations,
         )
 
         return context
@@ -314,3 +316,29 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return False
         else:
             True
+
+    @property
+    def protocol_deviations_cls(self):
+        return django_apps.get_model('esr21_subject.protocoldeviations')
+
+    
+    def get_deviations(self):
+        # subject_identifier=self.subject_identifier
+        # pid_dev_list=[]
+        # deviations_list = []
+        # deviations_list = self.protocol_deviations_cls.objects.filter().values_list('deviation_name', flat=True)
+        
+        # for dx in deviations_list:
+        #     dev_obj = self.protocol_deviations_cls.objects.get(deviation_name=dx)
+
+        #     dev_idsx = dev_obj.subject_identifiers.all().values_list('name', flat=True)  
+        #     if subject_identifier in dev_idsx:
+        #         pid_dev_list.append(dx)
+        #     else:
+        #         pass 
+            
+        # get the reverse
+        pid_dev_list = self.protocol_deviations_cls.objects.filter(subject_identifiers__name=self.subject_identifier)    
+        
+        return pid_dev_list 
+            

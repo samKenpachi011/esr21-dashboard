@@ -1,5 +1,5 @@
-{% comment %} {% extends "edc_dashboard/listboard.html" %} {% endcomment %}
-{% load admin_urls %}
+{% extends "edc_dashboard/listboard.html" %}
+{% load static %}
 {% load edc_base_extras %}
 {% load esr21_dashboard_extras %}
 
@@ -14,3 +14,33 @@
             <i class="fa fa-arrow-left fa-sm"></i> Go Back
     </a>
 {% endblock listboard_panel %}
+
+{% block listboard_table_header %}
+    <!-- begin results header -->
+    <th>#</th>
+    <th></th>
+    <th>Reported Date</th>
+    <th>Deviation Name</th>
+    <th>Deviation Desc</th>
+    <th>Deviation Form Name</th>
+
+    <!-- end results header -->
+{% endblock listboard_table_header %}
+
+{% block listboard_table_button_column %}
+    <td style="white-space: nowrap;">
+    <div class="btn-group">
+   
+    </div>
+    </td>
+{% endblock listboard_table_button_column %}
+
+
+{% block listboard_table_columns %}
+    
+    <td nowrap>{{ result.report_datetime }} </td>
+    <td nowrap>{{ result.deviation_name}}</td>
+    <td nowrap>{{ result.deviation_description}}</td>
+    <td nowrap>{{ result.esr21_form_name}}</td>
+
+{% endblock listboard_table_columns %}

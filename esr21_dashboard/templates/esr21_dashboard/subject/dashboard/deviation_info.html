@@ -4,6 +4,9 @@
             <span class="text text-default">
                 <small> 
                     <b>Deviations</b> <br> <br>
+                    {% for dev in deviations %}
+                    <b>{{dev}}</b> <br> <br>
+                    {% endfor %}
                 </small>
             </span>
         </a>

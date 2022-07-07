@@ -12,22 +12,21 @@ from django.utils.decorators import method_decorator
 from ...model_wrappers import ProtocolDeviationsModelWrapper
 
 
-class ListBoardView(EdcBaseViewMixin, NavbarViewMixin,
+class ListBoardView(NavbarViewMixin,EdcBaseViewMixin,
                     ListboardFilterViewMixin, SearchFormViewMixin,
                     ListboardView):
-    
     listboard_template = 'protocol_deviations_listboard_template'
     listboard_url = 'protocol_deviations_listboard_url'
-    listboard_panel_style = 'success' 
-    listboard_fa_icon = "far fa-user-circle"
+    listboard_panel_style = 'info' 
+    listboard_fa_icon = "fa-user-plus"
     
     model = 'esr21_subject.protocoldeviations'
     model_wrapper_cls = ProtocolDeviationsModelWrapper
     navbar_name = 'esr21_dashboard'
     navbar_selected_item = 'protocol_deviations'
+    ordering = '-modified'
+    paginate_by = 10
     search_form_url = 'protocol_deviations_listboard_url'
-    
-    
     
     
     @method_decorator(login_required)
@@ -40,16 +39,16 @@ class ListBoardView(EdcBaseViewMixin, NavbarViewMixin,
             protocol_deviation_add_url=self.model_cls().get_absolute_url())
         return context
 
+    def get_queryset_filter_options(self, request, *args, **kwargs):
+        options = super().get_queryset_filter_options(request, *args, **kwargs)
+        if kwargs.get('id'):
+            options.update(
+                {'deviation_id': kwargs.get('id')})
+        return options
 
-    # def get_queryset_filter_options(self, request, *args, **kwargs):
-    #     options = super().get_queryset_filter_options(request, *args, **kwargs)
-    #     if kwargs.get('deviation_id'):
-    #         options.update(
-    #             {'deviation_id': kwargs.get('deviation_id')})
-    #     return options
-
-    # def extra_search_options(self, search_term):
-    #     q = Q()
-    #     if re.match('^[A-Z]+$', search_term):
-    #         q = Q(deviation_name__exact=search_term)
-    #     return q
+    def extra_search_options(self, search_term):
+        q = Q()
+        if re.match('^[A-Z]+$', search_term):
+            q = Q(deviation_name__exact=search_term)
+        return q
+    

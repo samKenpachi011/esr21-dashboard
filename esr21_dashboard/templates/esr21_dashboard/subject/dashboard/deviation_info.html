@@ -1,13 +1,18 @@
-<div id="deviations-panel" class="panel-collapse collapse in">
-    <div class="list-group">
-        <a class="list-group-item">
-            <span class="text text-default">
-                <small> 
-                    <b>Deviations</b> <br> <br>
-                    {% for dev in deviations %}
-                    <b>{{dev}}</b> <br> <br>
-                    {% endfor %}
-                </small>
-            </span>
-        </a>
-</div>   
+{% load esr21_dashboard_extras %}
+
+<table class="table table-condensed">
+    <thead></thead>
+    <tbody>
+        
+    {% if deviations %}
+        {% for dev in deviations %}
+        <tr>
+            <td>
+                {{dev}}
+            </td>
+        </tr> 
+        {% endfor %}
+    {% endif %}
+
+    </tbody>
+</table>

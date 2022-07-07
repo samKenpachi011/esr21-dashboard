@@ -323,22 +323,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
     
     def get_deviations(self):
-        # subject_identifier=self.subject_identifier
-        # pid_dev_list=[]
-        # deviations_list = []
-        # deviations_list = self.protocol_deviations_cls.objects.filter().values_list('deviation_name', flat=True)
-        
-        # for dx in deviations_list:
-        #     dev_obj = self.protocol_deviations_cls.objects.get(deviation_name=dx)
-
-        #     dev_idsx = dev_obj.subject_identifiers.all().values_list('name', flat=True)  
-        #     if subject_identifier in dev_idsx:
-        #         pid_dev_list.append(dx)
-        #     else:
-        #         pass 
-            
-        # get the reverse
-        pid_dev_list = self.protocol_deviations_cls.objects.filter(subject_identifiers__name=self.subject_identifier)    
+        pid_dev_list = self.protocol_deviations_cls.objects.filter(
+            subject_identifiers__name=self.subject_identifier)    
         
         return pid_dev_list 
             

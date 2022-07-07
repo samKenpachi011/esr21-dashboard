@@ -43,9 +43,28 @@
 
 {% endblock top_bar %}
 
-
 {% block side_bar %}
-	{{ block.super }}	
+
+{% if deviations %}
+{% block deviation %}
+		<div class="panel panel-danger">
+			<div class="panel-heading">
+				<h6 class="panel-title">
+					<a id="deviations-panel-title" data-toggle="collapse" data-parent="#accordion" href="#deviations-panel">Protocol Deviation's Info <span class="caret"></span></a>
+				</h6>
+			</div>
+			<div id="deviations-panel" class="panel-collapse collapse in">
+			{% block deviations %}
+				{% include "esr21_dashboard/subject/dashboard/deviation_info.html" %}   
+				{% endblock deviations %}
+				</div>           
+				</div>
+				
+				{% endblock deviation %}	
+				{% endif %}
+	
+	
+{{ block.super }}	
 
 	{% if locator_obj %}
 
@@ -59,19 +78,8 @@
         {% include "esr21_dashboard/subject/dashboard/locator_info.html" %}   
   	</div>
   	{% endif %}
+	  
 
-	{% if deviations %}
-	  <div class="panel panel-default">
-		<div class="panel-heading">
-			<h6 class="panel-title">
-				<i class="fa fa-info-circle fa-lg fa-fw"></i> Deviation Info
-			</h6>
-		</div>
-		
-		  {% include "esr21_dashboard/subject/dashboard/deviation_info.html" %}   
-		</div>
-
-	{% endif %}  
 {% endblock side_bar %}
 
 

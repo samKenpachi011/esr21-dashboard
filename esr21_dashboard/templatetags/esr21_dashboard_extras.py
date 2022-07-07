@@ -8,6 +8,17 @@ from edc_visit_schedule.models import SubjectScheduleHistory
 register = template.Library()
 
 
+
+@register.inclusion_tag('esr21_dashboard/buttons/edit_protocol_deviation.html')
+def edit_protocol_button(model_wrapper):
+    title = ['Edit protocol devitaion form.']
+    # breakpoint()
+    return dict(
+        href=model_wrapper.href,
+        protocoldeviation=model_wrapper.object,
+        title=' '.join(title)
+    )
+
 @register.inclusion_tag('esr21_dashboard/buttons/eligibility_confirmation_button.html')
 def eligibility_confirmation_button(model_wrapper):
     title = ['Edit eligibility confirmation form.']

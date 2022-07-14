@@ -62,6 +62,24 @@
 				
 				{% endblock deviation %}	
 				{% endif %}
+
+{% if note_to_file %}
+{% block note_to_file %}
+		<div class="panel panel-danger">
+			<div class="panel-heading">
+				<h6 class="panel-title">
+					<a id="ntf-panel-title" data-toggle="collapse" data-parent="#accordion" href="#ntf-panel">Note to file <span class="caret"></span></a>
+				</h6>
+			</div>
+			<div id="ntf-panel" class="panel-collapse collapse in">
+			{% block note_to_files %}
+				{% include "esr21_dashboard/subject/dashboard/ntf_info.html" %}   
+				{% endblock note_to_files %}
+				</div>           
+				</div>
+				
+				{% endblock note_to_file %}	
+				{% endif %}
 	
 	
 {{ block.super }}	

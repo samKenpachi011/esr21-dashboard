@@ -126,6 +126,8 @@ DASHBOARD_URL_NAMES = {
     'screening_listboard_url': 'esr21_dashboard:screening_listboard_url',
     'subject_listboard_url': 'esr21_dashboard:subject_listboard_url',
     'protocol_deviations_url': 'esr21_dashboard:protocol_deviations_url',
+    'note_to_file_listboard_url': 'esr21_dashboard:note_to_file_listboard_url',
+
 }
 
 DASHBOARD_BASE_TEMPLATES = {
@@ -134,4 +136,5 @@ DASHBOARD_BASE_TEMPLATES = {
     'screening_listboard_template': 'esr21_dashboard/screening/listboard.html',
     'subject_listboard_template': 'esr21_dashboard/subject/listboard.html',
     'protocol_deviations_listboard_template': 'esr21_dashboard/deviations/listboard.html',
+    'note_to_file_listboard_template': 'esr21_dashboard/notes/listboard.html',
 }

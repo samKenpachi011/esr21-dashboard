@@ -1,0 +1,18 @@
+{% load esr21_dashboard_extras %}
+
+<table class="table table-condensed">
+    <thead></thead>
+    <tbody>
+        
+    {% if note_to_file %}
+        {% for ntf in note_to_file %}
+        <tr>
+            <td>
+                {{ntf.note_name}}
+            </td>
+        </tr> 
+        {% endfor %}
+    {% endif %}
+
+    </tbody>
+</table>

@@ -8,11 +8,19 @@ from edc_visit_schedule.models import SubjectScheduleHistory
 register = template.Library()
 
 
+# ntf
+@register.inclusion_tag('esr21_dashboard/buttons/edit_ntf_button.html')
+def edit_protocol_button(model_wrapper):
+    title = ['Edit note to file.']
+    return dict(
+        href=model_wrapper.href,
+        notetofile=model_wrapper.object,
+        title=' '.join(title)
+    )
 
 @register.inclusion_tag('esr21_dashboard/buttons/edit_protocol_deviation.html')
 def edit_protocol_button(model_wrapper):
     title = ['Edit protocol devitaion form.']
-    # breakpoint()
     return dict(
         href=model_wrapper.href,
         protocoldeviation=model_wrapper.object,

@@ -313,4 +313,4 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         except ObjectDoesNotExist:
             return False
         else:
-            True
+            return True

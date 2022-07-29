@@ -8,6 +8,13 @@ from edc_navbar import NavbarViewMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+from django.urls.base import reverse
+
+from django.http.response import HttpResponseRedirect
+
+
+class ReportViewError(Exception):
+    pass
 
 from ...model_wrappers import NoteToFileModelWrapper
 
@@ -53,3 +60,13 @@ class ListBoardView(NavbarViewMixin,EdcBaseViewMixin,
             q = Q(note_to_file_name__exact=search_term)
         return q
     
+    def post(self, request, *args, **kwargs):
+
+        if request.method == 'POST':
+            try:
+                url_name = request.url_name_data['note_to_file_listboard_url']
+            except KeyError as e:
+                raise ReportViewError(
+                    f'Invalid action.')
+            url = reverse(url_name, kwargs=kwargs)
+            return HttpResponseRedirect(url)

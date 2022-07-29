@@ -125,7 +125,7 @@ STATIC_URL = '/static/'
 DASHBOARD_URL_NAMES = {
     'screening_listboard_url': 'esr21_dashboard:screening_listboard_url',
     'subject_listboard_url': 'esr21_dashboard:subject_listboard_url',
-    'protocol_deviations_url': 'esr21_dashboard:protocol_deviations_url',
+    'protocol_deviations_listboard_url': 'esr21_dashboard:protocol_deviations_listboard_url',
     'note_to_file_listboard_url': 'esr21_dashboard:note_to_file_listboard_url',
 
 }

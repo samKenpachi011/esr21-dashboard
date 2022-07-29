@@ -41,9 +41,9 @@ class ListBoardView(NavbarViewMixin,EdcBaseViewMixin,
 
     def get_queryset_filter_options(self, request, *args, **kwargs):
         options = super().get_queryset_filter_options(request, *args, **kwargs)
-        if kwargs.get('id'):
+        if kwargs.get('deviation_name'):
             options.update(
-                {'deviation_id': kwargs.get('id')})
+                {'deviation_name': kwargs.get('deviation_name')})
         return options
 
     def extra_search_options(self, search_term):

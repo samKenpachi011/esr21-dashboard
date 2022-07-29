@@ -6,7 +6,7 @@
 
 {% block listboard_panel %}
     <a id="protocoldeviation_add" title="Add Deviation" class="btn btn-sm btn-default" role="button" 
-        href="{{ note_to_files_add_url }}">
+        href="{{ note_to_files_add_url }}?next={{ note_to_file_listboard_url }}"> 
             <i class="fa fa-plus fa-sm"></i> Note to Files
     </a>
     <a id="return_to_home" title="go back" class="btn btn-sm btn-default" role="button" 
@@ -30,8 +30,8 @@
 {% block listboard_table_button_column %}
     <td style="white-space: nowrap;">
     <div class="btn-group">
-        {% comment %} TODO:  create a edit button {% endcomment %}
-        {% comment %} {% edit_note_to_file_button result %} {% endcomment %}
+
+        {% edit_ntf_button result %}
     </div>
     </td>
 {% endblock listboard_table_button_column %}

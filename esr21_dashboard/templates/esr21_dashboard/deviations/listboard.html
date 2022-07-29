@@ -6,7 +6,7 @@
 
 {% block listboard_panel %}
     <a id="protocoldeviation_add" title="Add Deviation" class="btn btn-sm btn-default" role="button" 
-        href="{{ protocol_deviation_add_url }}">
+        href="{{ protocol_deviation_add_url }}?next={{ protocol_deviations_listboard_url }}">
             <i class="fa fa-plus fa-sm"></i> Protocol Deviation
     </a>
     <a id="return_to_home" title="go back" class="btn btn-sm btn-default" role="button" 
@@ -22,7 +22,7 @@
     <th>Reported Date</th>
     <th>Deviation Name</th>
     <th>Deviation Desc</th>
-    <th>Deviation Form Name</th>
+    <th>Form Name</th>
 
     <!-- end results header -->
 {% endblock listboard_table_header %}
@@ -41,6 +41,9 @@
     <td nowrap>{{ result.report_datetime }} </td>
     <td nowrap>{{ result.deviation_name}}</td>
     <td nowrap>{{ result.deviation_description}}</td>
-    <td nowrap>{{ result.esr21_form_name}}</td>
+    <td nowrap>{{ result.deviation_form_name  | get_label_lower }}</td>
+    {% comment %} <td nowrap>
+        {% get_label_lower result.deviation_form_name %}
+    </td> {% endcomment %}
 
 {% endblock listboard_table_columns %}

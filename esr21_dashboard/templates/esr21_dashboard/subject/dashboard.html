@@ -103,6 +103,16 @@
 
 
 {% block other_special_buttons %}
+
+{% if not valid_doses %}
+<div class="btn-group">
+	<p>
+		<span class="caret">Not eligible as the booster has been taken </span>
+	</p>
+</div>
+
+{% else %}
+
 {% if not has_schedules and show_schedule_buttons %}
 	<button class="btn btn-md btn-info"  onclick="confirm_main_schedule_enrollment()">
 		Main Schedule Enrollment
@@ -118,6 +128,10 @@
 		Booster Enrollment
 	</button>
 {% endif %}
+
+{% endif %}
+
+
 
 {% endblock other_special_buttons %}
 	

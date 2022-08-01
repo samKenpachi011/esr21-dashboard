@@ -126,6 +126,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             reconsented=self.reconsented,
             deviations=deviations,
             note_to_file = ntf,
+            valid_doses = self.check_dose_quantity,
+            
         )
 
         return context
@@ -339,3 +341,21 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         
         return ntf_list 
             
+    # check for dose quantity 
+    @property       
+    def check_dose_quantity(self):
+        
+        try:
+            history = self.vaccination_history_cls.objects.get(
+                subject_identifier=self.kwargs.get('subject_identifier'))
+        except self.vaccination_history_cls.DoesNotExist:
+            messages.add_message(self.request, messages.ERROR,
+                                 'Missing vaccination history form.')
+        else:
+            if history.received_vaccine == YES and history.dose_quantity == '3':
+                
+                return True
+            
+        return False    
+                
+                

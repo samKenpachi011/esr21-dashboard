@@ -123,8 +123,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
-            valid_doses = self.check_dose_quantity,
-            
+            valid_doses=self.check_dose_quantity,
         )
 
         return context
@@ -317,11 +316,9 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return False
         else:
             True
-            
-    # check for dose quantity 
-    @property       
+
+    @property
     def check_dose_quantity(self):
-        
         try:
             history = self.vaccination_history_cls.objects.get(
                 subject_identifier=self.kwargs.get('subject_identifier'))
@@ -330,7 +327,5 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                                  'Missing vaccination history form.')
         else:
             if history.received_vaccine == YES and history.dose_quantity == '3':
-                
                 return True
-            
-        return False  
+        return False

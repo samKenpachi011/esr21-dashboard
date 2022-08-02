@@ -99,8 +99,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
-        deviations = self.get_deviations()
-        ntf = self.get_ntf()
 
         if 'main_schedule_enrollment' in self.request.path:
             self.enrol_subject(cohort='esr21')

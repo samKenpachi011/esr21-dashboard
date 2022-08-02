@@ -125,8 +125,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
-            deviations=deviations,
-            note_to_file = ntf,
             valid_doses = self.check_dose_quantity,
             
         )
@@ -321,26 +319,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return False
         else:
             True
-
-    @property
-    def protocol_deviations_cls(self):
-        return django_apps.get_model('esr21_subject.protocoldeviations')
-
-    def get_deviations(self):
-        pid_dev_list = self.protocol_deviations_cls.objects.filter(
-            subject_identifiers__name=self.subject_identifier)    
-        
-        return pid_dev_list 
-    
-    @property
-    def ntf_cls(self):
-        return django_apps.get_model('esr21_subject.notetofile')
-
-    def get_ntf(self):
-        ntf_list = self.ntf_cls.objects.filter(
-            subject_identifiers__name=self.subject_identifier)    
-        
-        return ntf_list 
             
     # check for dose quantity 
     @property       

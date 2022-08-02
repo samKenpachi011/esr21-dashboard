@@ -19,13 +19,11 @@
         </tr>
 
     {% endif %}
-	{% if subject_consent.vaccination_history_model_obj %}
-		<tr>
-            <td>
-			{% vaccination_history_button subject_consent %}
-            </td>
-		</tr>
-	{% endif %}
+	<tr>
+        <td>
+        {% vaccination_history_button subject_consent %}
+        </td>
+    </tr>
 
     {% if not reconsented %}
     <tr>

@@ -1,3 +1,4 @@
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from edc_base.view_mixins import EdcBaseViewMixin
@@ -59,8 +60,10 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         then pass the instance to the context so can be used in the special forms.
         - If not filled, a none object will returned so that the button cannot be rendered by the template
         """
+
         # getting the class for offstudy
         subject_offstudy_cls = django_apps.get_model('esr21_prn.subjectoffstudy')
+
         try:
             # get offstudy instance
             subject_offstudy_obj = subject_offstudy_cls.objects.get(subject_identifier=self.subject_identifier)
@@ -120,6 +123,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
+            valid_doses=self.check_dose_quantity,
         )
 
         return context
@@ -311,14 +315,17 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         except ObjectDoesNotExist:
             return False
         else:
-            return True
+            True
 
     @property
-    def consent(self):
+    def check_dose_quantity(self):
         try:
-            consent = self.consent_model_cls.objects.filter(
-                subject_identifier=self.subject_identifier).latest('created')
-        except self.consent_model_cls.DoesNotExist:
-            pass
+            history = self.vaccination_history_cls.objects.get(
+                subject_identifier=self.kwargs.get('subject_identifier'))
+        except self.vaccination_history_cls.DoesNotExist:
+            messages.add_message(self.request, messages.ERROR,
+                                 'Missing vaccination history form.')
         else:
-            return consent
+            if history.received_vaccine == YES and history.dose_quantity == '3':
+                return True
+        return False

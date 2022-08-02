@@ -62,6 +62,13 @@
 {% endblock side_bar %}
 
 {% block other_special_buttons %}
+{% if valid_doses %}
+<div class="alert alert-danger" role="alert">
+	Participant has taken the booster.
+  </div>
+
+{% else %}
+
 {% if not has_schedules and show_schedule_buttons %}
 	<button class="btn btn-md btn-info"  onclick="confirm_main_schedule_enrollment()">
 		Main Schedule Enrollment
@@ -76,6 +83,8 @@
 	<button class="btn btn-md btn-info"  onclick="confirm_booster_enrollment()">
 		Booster Enrollment
 	</button>
+{% endif %}
+
 {% endif %}
 
 {% endblock other_special_buttons %}

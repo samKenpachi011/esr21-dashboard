@@ -59,10 +59,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         then pass the instance to the context so can be used in the special forms.
         - If not filled, a none object will returned so that the button cannot be rendered by the template
         """
-
         # getting the class for offstudy
         subject_offstudy_cls = django_apps.get_model('esr21_prn.subjectoffstudy')
-
         try:
             # get offstudy instance
             subject_offstudy_obj = subject_offstudy_cls.objects.get(subject_identifier=self.subject_identifier)
@@ -313,4 +311,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         except ObjectDoesNotExist:
             return False
         else:
-            True
+            return True
+
+    @property
+    def consent(self):
+        try:
+            consent = self.consent_model_cls.objects.filter(
+                subject_identifier=self.subject_identifier).latest('created')
+        except self.consent_model_cls.DoesNotExist:
+            pass
+        else:
+            return consent

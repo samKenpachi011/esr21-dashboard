@@ -1,3 +1,4 @@
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from edc_base.view_mixins import EdcBaseViewMixin
@@ -341,10 +342,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         
         return ntf_list 
             
-    # check for dose quantity 
-    @property       
+    @property           
     def check_dose_quantity(self):
-        
         try:
             history = self.vaccination_history_cls.objects.get(
                 subject_identifier=self.kwargs.get('subject_identifier'))
@@ -353,9 +352,5 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                                  'Missing vaccination history form.')
         else:
             if history.received_vaccine == YES and history.dose_quantity == '3':
-                
                 return True
-            
-        return False    
-                
-                
+        return False

@@ -103,13 +103,10 @@
 
 
 {% block other_special_buttons %}
-
-{% if not valid_doses %}
-<div class="btn-group">
-	<p>
-		<span class="caret">Not eligible as the booster has been taken </span>
-	</p>
-</div>
+{% if valid_doses %}
+<div class="alert alert-danger" role="alert">
+	Participant has taken the booster.
+  </div>
 
 {% else %}
 
@@ -130,8 +127,6 @@
 {% endif %}
 
 {% endif %}
-
-
 
 {% endblock other_special_buttons %}
 	

@@ -48,7 +48,7 @@ class ListBoardView(NavbarViewMixin,EdcBaseViewMixin,
 
     def extra_search_options(self, search_term):
         q = Q()
-        if re.match('^[A-Z]+$', search_term):
-            q = Q(deviation_name__exact=search_term)
+        if re.match('^[A-Za-z]+$', search_term):
+            q = Q(deviation_name__icontains=search_term)
         return q
     

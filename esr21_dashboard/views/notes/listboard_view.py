@@ -49,24 +49,14 @@ class ListBoardView(NavbarViewMixin,EdcBaseViewMixin,
 
     def get_queryset_filter_options(self, request, *args, **kwargs):
         options = super().get_queryset_filter_options(request, *args, **kwargs)
-        if kwargs.get('id'):
+        if kwargs.get('note_name'):
             options.update(
-                {'note_to_file_id': kwargs.get('id')})
+                {'note_name': kwargs.get('note_name')})
         return options
 
     def extra_search_options(self, search_term):
         q = Q()
-        if re.match('^[A-Z]+$', search_term):
-            q = Q(note_to_file_name__exact=search_term)
+        if re.match('^[A-Za-z]+$', search_term):
+            q = Q(note_name__icontains=search_term)
         return q
     
-    def post(self, request, *args, **kwargs):
-
-        if request.method == 'POST':
-            try:
-                url_name = request.url_name_data['note_to_file_listboard_url']
-            except KeyError as e:
-                raise ReportViewError(
-                    f'Invalid action.')
-            url = reverse(url_name, kwargs=kwargs)
-            return HttpResponseRedirect(url)

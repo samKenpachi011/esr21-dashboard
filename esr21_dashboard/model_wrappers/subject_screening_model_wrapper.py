@@ -49,7 +49,4 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
 
     @property
     def subject_identifier(self):
-        consent_model = self.consent_model_obj
-        if consent_model:
-            return consent_model.subject_identifier
-        return None
+        return self.object.subject_identifier or None

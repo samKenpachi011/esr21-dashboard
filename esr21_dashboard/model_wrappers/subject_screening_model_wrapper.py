@@ -1,5 +1,7 @@
+from django.apps import apps as django_apps
 from django.conf import settings
 from edc_model_wrapper import ModelWrapper
+from edc_visit_schedule.models import SubjectScheduleHistory
 
 from .subject_consent_wrapper_mixin import SubjectConsentWrapperMixin
 
@@ -46,6 +48,22 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
             version=self.consent_version)
 
         return options
+
+    @property
+    def consent(self):
+        """Returns a wrapped saved or unsaved consent.
+        """
+        model_obj = self.consent_object.model_cls(
+            **self.create_consent_options)
+        return self.consent_model_wrapper_cls(model_obj=model_obj)
+
+    @property
+    def is_onschedule(self):
+        subject_schedule = SubjectScheduleHistory.objects.filter(
+                subject_identifier=self.subject_identifier).first()
+        if subject_schedule:
+            return True
+        return False
 
     @property
     def subject_identifier(self):

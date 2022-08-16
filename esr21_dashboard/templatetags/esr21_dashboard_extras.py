@@ -6,7 +6,6 @@ from django.utils.safestring import mark_safe
 from edc_visit_schedule.models import SubjectScheduleHistory
 from django.apps import apps as django_apps
 
-import ast
 
 register = template.Library()
 

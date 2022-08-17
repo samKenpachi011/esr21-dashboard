@@ -52,13 +52,5 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
         return self.consent_model_wrapper_cls(model_obj=model_obj)
 
     @property
-    def is_onschedule(self):
-        subject_schedule = SubjectScheduleHistory.objects.filter(
-                subject_identifier=self.subject_identifier).first()
-        if subject_schedule:
-            return True
-        return False
-
-    @property
     def subject_identifier(self):
         return self.object.subject_identifier or None

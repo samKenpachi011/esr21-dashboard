@@ -4,9 +4,30 @@ from django import template
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from edc_visit_schedule.models import SubjectScheduleHistory
+from django.apps import apps as django_apps
+
 
 register = template.Library()
 
+
+# ntf
+@register.inclusion_tag('esr21_dashboard/buttons/edit_ntf_button.html')
+def edit_ntf_button(model_wrapper):
+    title = ['Edit note to file.']
+    return dict(
+        href=model_wrapper.href,
+        notetofile=model_wrapper.object,
+        title=' '.join(title)
+    )
+
+@register.inclusion_tag('esr21_dashboard/buttons/edit_protocol_deviation.html')
+def edit_protocol_button(model_wrapper):
+    title = ['Edit protocol devitaion form.']
+    return dict(
+        href=model_wrapper.href,
+        protocoldeviation=model_wrapper.object,
+        title=' '.join(title)
+    )
 
 @register.inclusion_tag('esr21_dashboard/buttons/eligibility_confirmation_button.html')
 def eligibility_confirmation_button(model_wrapper):
@@ -174,3 +195,40 @@ def consent_v3_button(model_wrapper):
         add_consent_href=model_wrapper.href,
         consent_version='3',
         title=' '.join(title))
+
+
+# insert a simple tag
+# @register.filter(name='get_label_lower')
+# def get_label_lower(info):
+
+#     esr21_subject = django_apps.get_app_config('esr21_subject')
+#     list_x_mdl = []
+#     for dev_str in ast.literal_eval(info):
+#         print(dev_str)
+#         list_x = [x_model._meta.verbose_name for x_model in esr21_subject.get_models() if x_model._meta.label_lower == dev_str]
+#         list_x_mdl += list_x
+        
+#     return list_x_mdl
+
+@register.filter(name='get_label_lower')
+def get_label_lower(info):
+    esr21_subject = django_apps.get_app_config('esr21_subject')
+    list_x_mdl = []
+    dev_list = info.replace('"', '').replace("''", '')
+    x = dev_list.replace("'", '')
+    x = x.replace('[', '').replace(']', '')
+    x = x.split(',')
+    for f_n in x:
+        f_n = f_n.strip()
+        list_x = [x_model._meta.verbose_name for x_model in esr21_subject.get_models() if x_model._meta.label_lower == f_n]
+        list_x_mdl += list_x
+        
+    dev_form_name = ''
+    for form_name in list_x_mdl:
+        dev_form_name += f'{form_name}, '
+    dev_form_name = dev_form_name.strip().removesuffix(',')
+    return dev_form_name
+    
+    
+    
+    

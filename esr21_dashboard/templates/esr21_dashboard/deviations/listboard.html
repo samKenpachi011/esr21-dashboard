@@ -1,0 +1,49 @@
+{% extends "edc_dashboard/listboard.html" %}
+{% load static %}
+{% load edc_base_extras %}
+{% load esr21_dashboard_extras %}
+
+
+{% block listboard_panel %}
+    <a id="protocoldeviation_add" title="Add Deviation" class="btn btn-sm btn-default" role="button" 
+        href="{{ protocol_deviation_add_url }}?next={{ protocol_deviations_listboard_url }}">
+            <i class="fa fa-plus fa-sm"></i> Protocol Deviation
+    </a>
+    <a id="return_to_home" title="go back" class="btn btn-sm btn-default" role="button" 
+        href="/">
+            <i class="fa fa-arrow-left fa-sm"></i> Go Back
+    </a>
+{% endblock listboard_panel %}
+
+{% block listboard_table_header %}
+    <!-- begin results header -->
+    <th>#</th>
+    <th></th>
+    <th>Reported Date</th>
+    <th>Deviation Name</th>
+    <th>Deviation Desc</th>
+    <th>Form Name</th>
+
+    <!-- end results header -->
+{% endblock listboard_table_header %}
+
+{% block listboard_table_button_column %}
+    <td style="white-space: nowrap;">
+    <div class="btn-group">
+        {% edit_protocol_button result %}
+    </div>
+    </td>
+{% endblock listboard_table_button_column %}
+
+
+{% block listboard_table_columns %}
+    
+    <td nowrap>{{ result.report_datetime }} </td>
+    <td nowrap>{{ result.deviation_name}}</td>
+    <td nowrap>{{ result.deviation_description}}</td>
+    <td nowrap>{{ result.deviation_form_name  | get_label_lower }}</td>
+    {% comment %} <td nowrap>
+        {% get_label_lower result.deviation_form_name %}
+    </td> {% endcomment %}
+
+{% endblock listboard_table_columns %}

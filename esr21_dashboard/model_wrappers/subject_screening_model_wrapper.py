@@ -6,6 +6,7 @@ from .subject_consent_wrapper_mixin import SubjectConsentWrapperMixin
 from .informed_consent_model_wrapper import InformedConsentModelWrapper
 from .screening_model_wrapper_mixin import ScreeningModelWrapperMixin
 from .vaccination_history_model_wrapper_mixin import VaccinationHistoryModelWrapperMixin
+from .screen_out_wrapper_mixin import ScreeningOutWrapperMixin
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 from edc_base.utils import get_uuid
@@ -14,6 +15,7 @@ from edc_base.utils import get_uuid
 class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
                                    SubjectConsentWrapperMixin,
                                    VaccinationHistoryModelWrapperMixin,
+                                   ScreeningOutWrapperMixin,
                                    ModelWrapper):
 
     consent_model_wrapper_cls = InformedConsentModelWrapper

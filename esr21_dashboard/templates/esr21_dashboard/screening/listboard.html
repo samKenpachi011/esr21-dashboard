@@ -31,11 +31,15 @@
     <td style="white-space: nowrap">
     <div class="btn-group">
     {% eligibility_confirmation_button result %}
+    
     {% if not result.is_eligible %}
         {% eligibility_button result %}
     {% endif %}
     {% if result.is_eligible %}
         {% consent_button result %}
+        {% screening_out_button result %}
+        
+        
         {% if result.consent %}
             {% if result.screening and not result.screening.object.is_eligible %}
                 {% edit_screening_button result %}

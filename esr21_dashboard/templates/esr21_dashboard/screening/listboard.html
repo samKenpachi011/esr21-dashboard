@@ -37,7 +37,6 @@
     {% endif %}
     {% if result.is_eligible and not result.subject_identifier %}
         {% consent_button result %}
-        {% screening_out_button result %}
         
         {% if result.consent %}
             {% if result.screening and not result.screening.object.is_eligible %}

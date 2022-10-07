@@ -110,26 +110,25 @@
 
 {% else %}
 
-{% if not has_schedules and show_schedule_buttons %}
-	<button class="btn btn-md btn-info"  onclick="confirm_main_schedule_enrollment()">
-		Main Schedule Enrollment
-	</button>
-	{% if not is_subcohort_full %}
-		<button class="btn btn-md btn-success"  onclick="confirm_sub_cohort_enrollment()" role="button" >
-			Sub Cohort Enrollment
+	{% if not has_schedules and show_schedule_buttons %}
+		<button class="btn btn-md btn-info"  onclick="confirm_main_schedule_enrollment()">
+			Main Schedule Enrollment
+		</button>
+		{% if not is_subcohort_full %}
+			<button class="btn btn-md btn-success"  onclick="confirm_sub_cohort_enrollment()" role="button" >
+				Sub Cohort Enrollment
+			</button>
+		{% endif %}
+	{% endif %}
+	{% if booster_due %}
+		<button class="btn btn-md btn-info"  onclick="confirm_booster_enrollment()">
+			Booster Enrollment
 		</button>
 	{% endif %}
-{% endif %}
-{% if booster_due %}
-	<button class="btn btn-md btn-info"  onclick="confirm_booster_enrollment()">
-		Booster Enrollment
-	</button>
-{% endif %}
 
 {% endif %}
 
 {% endblock other_special_buttons %}
-	
 {% block visit_schedules_panel %}
    {% for visit_schedule in visit_schedules.values %}
    		 {% for schedule in visit_schedule.schedules.values %}

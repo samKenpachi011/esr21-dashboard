@@ -1,5 +1,7 @@
+from django.apps import apps as django_apps
 from django.conf import settings
 from edc_model_wrapper import ModelWrapper
+from edc_visit_schedule.models import SubjectScheduleHistory
 
 from .subject_consent_wrapper_mixin import SubjectConsentWrapperMixin
 
@@ -28,13 +30,7 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
 
     @property
     def consent_model_obj(self):
-        """Returns a consent model instance or None.
-        """
-        consent_model_cls = django_apps.get_model(self.consent_model_wrapper_cls.model)
-        try:
-            return consent_model_cls.objects.get(**self.consent_options)
-        except ObjectDoesNotExist:
-            return None
+        pass
 
     @property
     def create_consent_options(self):
@@ -48,8 +44,13 @@ class SubjectScreeningModelWrapper(ScreeningModelWrapperMixin,
         return options
 
     @property
+    def consent(self):
+        """Returns a wrapped saved or unsaved consent.
+        """
+        model_obj = self.consent_object.model_cls(
+            **self.create_consent_options)
+        return self.consent_model_wrapper_cls(model_obj=model_obj)
+
+    @property
     def subject_identifier(self):
-        consent_model = self.consent_model_obj
-        if consent_model:
-            return consent_model.subject_identifier
-        return None
+        return self.object.subject_identifier or None

@@ -99,8 +99,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
-        deviations = self.get_deviations()
-        ntf = self.get_ntf()
 
         if 'main_schedule_enrollment' in self.request.path:
             self.enrol_subject(cohort='esr21')
@@ -125,10 +123,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
-            deviations=deviations,
-            note_to_file = ntf,
-            valid_doses = self.check_dose_quantity,
-            
+            valid_doses=self.check_dose_quantity
         )
 
         return context
@@ -323,26 +318,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             True
 
     @property
-    def protocol_deviations_cls(self):
-        return django_apps.get_model('esr21_subject.protocoldeviations')
-
-    def get_deviations(self):
-        pid_dev_list = self.protocol_deviations_cls.objects.filter(
-            subject_identifiers__name=self.subject_identifier)    
-        
-        return pid_dev_list 
-    
-    @property
-    def ntf_cls(self):
-        return django_apps.get_model('esr21_subject.notetofile')
-
-    def get_ntf(self):
-        ntf_list = self.ntf_cls.objects.filter(
-            subject_identifiers__name=self.subject_identifier)    
-        
-        return ntf_list 
-            
-    @property           
     def check_dose_quantity(self):
         try:
             history = self.vaccination_history_cls.objects.get(

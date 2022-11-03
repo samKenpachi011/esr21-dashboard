@@ -73,9 +73,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             subject_offstudy_obj = subject_offstudy_cls.objects.get(subject_identifier=self.subject_identifier)
         except subject_offstudy_cls.DoesNotExist:
             # If the offstudy does not exist
-            reason = f'Please put the subject off-study'
-            messages.add_message(self.request, messages.ERROR,
-                                 f'{reason}')
             return None
         else:
             # create instance of the wrapper

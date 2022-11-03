@@ -48,10 +48,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     @property
     def vaccination_history_cls(self):
         return django_apps.get_model('esr21_subject.vaccinationhistory')
-    
-    @property
-    def subject_offstudy_cls(self):
-        return django_apps.get_model('esr21_prn.subjectoffstudy')
 
     @property
     def onschedule_model_cls(self):

@@ -48,6 +48,10 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     @property
     def vaccination_history_cls(self):
         return django_apps.get_model('esr21_subject.vaccinationhistory')
+    
+    @property
+    def subject_offstudy_cls(self):
+        return django_apps.get_model('esr21_prn.subjectoffstudy')
 
     @property
     def onschedule_model_cls(self):
@@ -69,12 +73,18 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             subject_offstudy_obj = subject_offstudy_cls.objects.get(subject_identifier=self.subject_identifier)
         except subject_offstudy_cls.DoesNotExist:
             # If the offstudy does not exist
+            reason = f'Please put the subject off-study'
+            messages.add_message(self.request, messages.ERROR,
+                                 f'{reason}')
             return None
         else:
             # create instance of the wrapper
             subject_offstudy_wrapper = SubjectOffStudyModelWrapper(model_obj=subject_offstudy_obj)
 
-            # return instance so it can be used in the context
+            reason = subject_offstudy_wrapper.object.get_reason_display()
+            messages.add_message(self.request, messages.ERROR,
+                                 f'Subject is off study due to {reason}')
+            
             return subject_offstudy_wrapper
 
     @property
@@ -123,7 +133,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             show_schedule_buttons=self.show_schedule_buttons,
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
-            valid_doses=self.check_dose_quantity
+            valid_doses=self.check_dose_quantity,
         )
 
         return context
@@ -329,3 +339,4 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             if history.received_vaccine == YES and history.dose_quantity == '3':
                 return True
         return False
+    

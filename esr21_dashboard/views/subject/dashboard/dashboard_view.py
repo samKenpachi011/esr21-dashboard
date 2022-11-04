@@ -18,6 +18,8 @@ from django.shortcuts import redirect
 from django.apps import apps as django_apps
 from edc_base.utils import get_utcnow
 from django.contrib import messages
+from django.contrib.messages import get_messages
+
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -102,6 +104,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
+        edc_readonly = None
+        
+        if self.request.GET.get('edc_readonly'):
+            edc_readonly = self.request.GET.get('edc_readonly') == '1'
+            
+        if edc_readonly:
+            storage = get_messages(self.request)
+            storage.used = True    
 
         if 'main_schedule_enrollment' in self.request.path:
             self.enrol_subject(cohort='esr21')
@@ -127,6 +137,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             wrapped_consent_v3=self.wrapped_consent_v3,
             reconsented=self.reconsented,
             valid_doses=self.check_dose_quantity,
+            edc_readonly=edc_readonly,
         )
 
         return context
